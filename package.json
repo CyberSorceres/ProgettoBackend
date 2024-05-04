@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/CyberSorceres/ProgettoBackend/issues"
   },
-  "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme"
+  "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme",
+  "devDependencies": {
+    "serverless": "^3.38.0"
+  }
 }
