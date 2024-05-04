@@ -1,0 +1,32 @@
+name: Build and release container image
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "*.md"
+      - LICENSE
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install npm/nodejs
+        uses: actions/setup-node@v4
+      - name: Install packages
+        run: npm ci
+      - name: Build 
+        run: npx serverless deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ SECRETS.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ SECRETS.AWS_SECRET_KEY }}
+          
