@@ -1,0 +1,19 @@
+{
+  "name": "progettobackend",
+  "version": "1.0.0",
+  "description": "Backend del progetto",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CyberSorceres/ProgettoBackend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CyberSorceres/ProgettoBackend/issues"
+  },
+  "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme"
+}
