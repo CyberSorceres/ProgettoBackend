@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Test
 
 on:
   push:
@@ -7,6 +7,13 @@ on:
     paths-ignore:
       - "*.md"
       - LICENSE
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+    - "*.md"
+    - LICENSE
+    - "*.yaml"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -24,9 +31,8 @@ jobs:
         uses: actions/setup-node@v4
       - name: Install packages
         run: npm ci
-      - name: Build 
-        run: npx serverless deploy
-        env:
-          AWS_ACCESS_KEY_ID: ${{ SECRETS.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ SECRETS.AWS_SECRET_KEY }}
+      - name: Test
+        run: npm test
+
+        
           
