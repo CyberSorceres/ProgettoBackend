@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme",
   "devDependencies": {
-    "serverless": "^3.38.0"
+    "serverless": "^3.38.0",
+    "vitest": "^1.6.0"
   }
 }
