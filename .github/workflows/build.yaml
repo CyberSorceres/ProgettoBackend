@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -24,9 +24,8 @@ jobs:
         uses: actions/setup-node@v4
       - name: Install packages
         run: npm ci
-      - name: Build 
+      - name: Build
         run: npx serverless deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ SECRETS.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ SECRETS.AWS_SECRET_KEY }}
-          
