@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme",
   "devDependencies": {
+    "mongoose": "^8.3.4",
     "prettier": "^3.2.5",
     "serverless": "^3.38.0",
     "typescript": "^5.4.5",
