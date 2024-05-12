@@ -4,7 +4,8 @@
   "description": "Backend del progetto",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "prettier": "npx prettier --write --cache ."
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
   },
   "homepage": "https://github.com/CyberSorceres/ProgettoBackend#readme",
   "devDependencies": {
+    "prettier": "^3.2.5",
     "serverless": "^3.38.0",
+    "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   }
 }
