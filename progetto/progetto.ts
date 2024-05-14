@@ -4,7 +4,7 @@ export class Progetto {
   private name: string;
   private validated: boolean;
   private epicStories: EpicStory[];
-  private id: number;
+  private id: string;
 
   get Name(): string {
     return this.name;
@@ -21,10 +21,10 @@ export class Progetto {
   set Validated(value: boolean) {
     this.validated = value;
   }
-  get Id(): number {
+  get Id(): string {
     return this.id;
   }
-  set Id(value: number) {
+  set Id(value: string) {
     this.id = value;
   }
 
