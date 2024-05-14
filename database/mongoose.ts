@@ -13,10 +13,10 @@ export class Mongoose {
 
   private constructor() {}
 
-  static create(url?: string) {
+  static async create(url?: string) {
     const mongoose = new Mongoose();
     if (url) {
-      mongoose.connect(url);
+      await mongoose.connect(url);
     }
     return mongoose;
   }

@@ -2,7 +2,7 @@ import { Progetto } from "../progetto";
 import { ProgettoDao } from "./progetto_dao";
 
 export class ProgettoDaoMock implements ProgettoDao {
-  private static progetti: Progetto[];
+  private static progetti: Progetto[] = [];
   private static counter = 0;
   async findAll(): Promise<Progetto[]> {
     return ProgettoDaoMock.progetti;
