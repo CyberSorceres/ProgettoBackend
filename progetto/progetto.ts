@@ -1,43 +1,44 @@
 import type { EpicStory } from "./epic_story";
 
 export class Progetto {
-  #name: string;
-  #validated: boolean;
-  #epicStories: EpicStory[];
-  #id: number;
+  private name: string;
+  private validated: boolean;
+  private epicStories: EpicStory[];
+  private id: number;
 
-  get name(): string {
-    return this.#name;
-  }
-
-  set name(value: string) {
-    this.#name = value;
+  get Name(): string {
+    return this.name;
   }
 
-  get validated(): boolean {
-    return this.#validated;
+  set Name(value: string) {
+    this.name = value;
   }
 
-  set validated(value: boolean) {
-    this.#validated = value;
+  get Validated(): boolean {
+    return this.validated;
   }
-  get id(): number {
-    return this.#id;
+
+  set Validated(value: boolean) {
+    this.validated = value;
   }
-  set id(value: number) {
-    this.#id = value;
+  get Id(): number {
+    return this.id;
+  }
+  set Id(value: number) {
+    this.id = value;
   }
 
   constructor(name: string, validated: boolean, epicStories: EpicStory[] = []) {
-    this.#name = name;
-    this.#epicStories = epicStories;
+    this.name = name;
+    this.validated = validated;
+    this.epicStories = epicStories;
   }
 
   addEpicStory(epicStory: EpicStory) {
-    this.#epicStories.push(epicStory);
+    this.epicStories.push(epicStory);
   }
 
-  get epicStories() {
-    return this.#epicStories;
+  get EpicStories() {
+    return this.epicStories;
   }
 }
