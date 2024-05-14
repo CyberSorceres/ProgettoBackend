@@ -13,9 +13,7 @@ export const getProgetti = async (
   const user = await userDao.findById(userId);
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      progetti.filter((p) => user.getProjectRole(p.Id) !== null),
-    ),
+    body: JSON.stringify(progetti.filter((p) => user.getProjectRole(p.Id))),
   };
 };
 

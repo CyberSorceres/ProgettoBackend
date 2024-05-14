@@ -1,5 +1,5 @@
 export enum Role {
-  DEV,
+  DEV = 1,
   PM,
   USER,
 }
@@ -9,10 +9,10 @@ export class User {
   /**
    * Mappa progettoId -> Ruolo
    */
-  private projects: Map<string, Role>;
+  private projects: Map<string, Role> = new Map();
 
   getProjectRole(projectId: string) {
-    return this.projects[projectId];
+    return this.projects.get(projectId);
   }
 
   getProjectIds(): string[] {
