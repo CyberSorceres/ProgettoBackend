@@ -1,15 +1,30 @@
 import { ProgettoDao } from "../progetto/dao/progetto_dao";
+import { UserDao } from "../user/dao/user_dao";
 import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
+import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 
-export const getProgetti = async (progettoDao: ProgettoDao) => {
+export const getProgetti = async (
+  progettoDao: ProgettoDao,
+  userDao: UserDao,
+  userId: string,
+) => {
+  const progetti = await progettoDao.findAll();
+  const user = await userDao.findById(userId);
   return {
     statusCode: 200,
-    body: JSON.stringify(await progettoDao.findAll()),
+    body: JSON.stringify(
+      progetti.filter((p) => user.getProjectRole(p.Id) !== null),
+    ),
   };
 };
 
-export const handler = async () => {
+export const handler = async (req) => {
+  const id = req?.requestContext?.identity?.cognitoIdentityId;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return getProgetti(new ProgettoMongoose(mongoose));
+  return getProgetti(
+    new ProgettoMongoose(mongoose),
+    new UserMongoose(mongoose),
+    id,
+  );
 };
