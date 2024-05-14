@@ -9,7 +9,7 @@ export const getProgetti = async (progettoDao: ProgettoDao) => {
   };
 };
 
-export default async () => {
-  const mongoose = await Mongoose.create("todo");
+export const handler = async () => {
+  const mongoose = await Mongoose.create(process.env.DB_URL);
   return getProgetti(new ProgettoMongoose(mongoose));
 };

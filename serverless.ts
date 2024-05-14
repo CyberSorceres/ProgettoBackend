@@ -1,6 +1,8 @@
 import type { AWS } from "@serverless/typescript";
 
-export const serverlessConfiguration: AWS = {
+console.log(process.env.DB_URL);
+
+const serverlessConfiguration: AWS = {
   service: "todo-list",
   frameworkVersion: "3",
   plugins: ["serverless-esbuild", "serverless-offline"],
@@ -10,6 +12,9 @@ export const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs20.x",
+    environment: {
+      DB_URL: process.env.DB_URL ?? "",
+    },
   },
   functions: {
     getProgetti: {
@@ -26,3 +31,5 @@ export const serverlessConfiguration: AWS = {
     },
   },
 };
+
+module.exports = serverlessConfiguration;
