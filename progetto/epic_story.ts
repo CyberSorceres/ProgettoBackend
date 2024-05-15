@@ -1,25 +1,28 @@
 import { UserStory } from "./user_story";
 
 export class EpicStory {
-  #description: string;
-  #userStories: UserStory[];
-  get description(): string {
-    return this.#description;
+  description: string;
+  userStories: UserStory[];
+  _id;
+
+  get Description(): string {
+    return this.description;
   }
-  set description(value: string) {
-    this.#description = value;
+  set Description(value: string) {
+    this.description = value;
   }
 
   addUserStory(userStory: UserStory) {
-    this.#userStories.push(userStory);
+    this.userStories.push(userStory);
   }
 
-  get userStories() {
-    return this.#userStories;
+  get UserStories() {
+    return this.userStories;
   }
 
-  constructor(description: string, userStories: UserStory[]) {
-    this.#description = description;
-    this.#userStories = userStories;
+  constructor(description: string, userStories: UserStory[], _id: string = "") {
+    this.description = description;
+    this.userStories = userStories;
+    this._id = _id;
   }
 }

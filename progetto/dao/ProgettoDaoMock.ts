@@ -1,6 +1,5 @@
 import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
-import { UserStory } from "../user_story";
 import { ProgettoDao } from "./progetto_dao";
 
 export class ProgettoDaoMock implements ProgettoDao {
@@ -25,25 +24,13 @@ export class ProgettoDaoMock implements ProgettoDao {
   }
   async deleteProgetto(progetto: Progetto): Promise<boolean> {
     ProgettoDaoMock.progetti = ProgettoDaoMock.progetti.filter(
-      (p) => p.Id !== progetto.Id,
+      (p) => p.id !== progetto.id,
     );
     return true;
   }
   async insertEpicStory(id: any, epicStory: EpicStory): Promise<boolean> {
     const progetto = await this.findById(id);
-    epicStory._id = (++ProgettoDaoMock.counter).toString();
     progetto.EpicStories.push(epicStory);
-    return true;
-  }
-  async insertUserStory(
-    id: any,
-    epicStoryId: any,
-    userStory: UserStory,
-  ): Promise<boolean> {
-    const progetto = await this.findById(id);
-    progetto.EpicStories.find((e) => e._id === epicStoryId).UserStories.push(
-      userStory,
-    );
     return true;
   }
 }
