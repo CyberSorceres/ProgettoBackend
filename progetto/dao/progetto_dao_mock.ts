@@ -1,3 +1,4 @@
+import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
 import { ProgettoDao } from "./progetto_dao";
 
@@ -25,6 +26,11 @@ export class ProgettoDaoMock implements ProgettoDao {
     ProgettoDaoMock.progetti = ProgettoDaoMock.progetti.filter(
       (p) => p.id !== progetto.id,
     );
+    return true;
+  }
+  async insertEpicStory(id: any, epicStory: EpicStory): Promise<boolean> {
+    const progetto = await this.findById(id);
+    progetto.EpicStories.push(epicStory);
     return true;
   }
 }

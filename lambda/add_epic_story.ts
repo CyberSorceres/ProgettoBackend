@@ -15,7 +15,7 @@ function validateBody(body: object): body is AddEpicStoryRequest {
   return "description" in body && "projectId" in body;
 }
 
-export const addProgetto = async (
+export const addEpicStory = async (
   progettoDao: ProgettoDao,
   userDao: UserDao,
   userId: string,
@@ -55,7 +55,7 @@ export const addProgetto = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return addProgetto(
+  return addEpicStory(
     new ProgettoMongoose(mongoose),
     new UserMongoose(mongoose),
     id,
