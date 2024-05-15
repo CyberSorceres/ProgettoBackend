@@ -11,12 +11,21 @@ export class UserMongoose implements UserDao {
     this.mongoose = mongoose;
     this.UserModel = this.mongoose.connection.model<User>(
       "User",
-      new Schema().loadClass(User),
+      new Schema({
+        id: String,
+        projects: [
+          {
+            id: String,
+            role: Number,
+          },
+        ],
+      }).loadClass(User),
     );
   }
   async findById(id: any): Promise<User> {
     const user = await this.UserModel.findOne({ id });
-    return new User(user.id);
+    if (!user) return null;
+    return new User(user.id, user.projects);
   }
   async insertUser(user: User): Promise<boolean> {
     try {
@@ -39,7 +48,7 @@ export class UserMongoose implements UserDao {
     projectId: string,
     role: Role,
   ): Promise<boolean> {
-    this.UserModel.updateOne(
+    await this.UserModel.findOneAndUpdate(
       { id: userId },
       {
         $push: {

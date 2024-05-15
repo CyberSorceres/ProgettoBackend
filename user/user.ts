@@ -32,7 +32,8 @@ export class User {
     return this.id;
   }
 
-  constructor(id: string) {
+  constructor(id: string, projects: ProjectData[]) {
     this.id = id;
+    this.projects = projects;
   }
 }

@@ -19,6 +19,22 @@ const serverlessConfiguration: AWS = {
         Ref: "UserClient",
       },
     },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: "Allow",
+            Action: [
+              "bedrock:InvokeModel",
+              "cognito-idp:AdminInitiateAuth",
+              "cognito-idp:AdminCreateUser",
+              "cognito-idp:AdminSetUserPassword",
+            ],
+            Resource: "*",
+          },
+        ],
+      },
+    },
   },
   functions: {
     getProgetti: {
@@ -29,6 +45,14 @@ const serverlessConfiguration: AWS = {
             method: "GET",
             path: "/getProgetti",
             cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
           },
         },
       ],
@@ -41,6 +65,14 @@ const serverlessConfiguration: AWS = {
             method: "POST",
             path: "/add_progetto",
             cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
           },
         },
       ],

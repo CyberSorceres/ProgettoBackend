@@ -13,12 +13,15 @@ export const getProgetti = async (
   const user = await userDao.findById(userId);
   return {
     statusCode: 200,
-    body: JSON.stringify(progetti.filter((p) => user.getProjectRole(p.Id))),
+    body: JSON.stringify({
+      celebrale: progetti.filter((p) => user.getProjectRole(p.Id)),
+      razionale: user,
+    }),
   };
 };
 
 export const handler = async (req) => {
-  const id = req?.requestContext?.identity?.cognitoIdentityId;
+  const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return getProgetti(
     new ProgettoMongoose(mongoose),

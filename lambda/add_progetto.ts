@@ -4,7 +4,7 @@ import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Progetto } from "../progetto/progetto";
-import { Role } from "../user/user";
+import { Role, User } from "../user/user";
 
 interface AddProgettoRequest {
   name: string;
@@ -22,6 +22,9 @@ export const addProgetto = async (
 ) => {
   const progetti = await progettoDao.findAll();
   const user = await userDao.findById(userId);
+  if (!user) {
+    await userDao.insertUser(new User(userId));
+  }
   const isValid = validateBody(body);
   if (!isValid)
     return {
@@ -40,7 +43,7 @@ export const addProgetto = async (
 };
 
 export const handler = async (req) => {
-  const id = req?.requestContext?.identity?.cognitoIdentityId;
+  const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return addProgetto(
     new ProgettoMongoose(mongoose),

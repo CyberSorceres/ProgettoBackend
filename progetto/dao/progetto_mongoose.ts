@@ -12,15 +12,25 @@ export class ProgettoMongoose implements ProgettoDao {
     this.mongoose = mongoose;
     this.ProgettoModel = this.mongoose.connection.model<Progetto>(
       "Progetto",
-      new Schema().loadClass(Progetto),
+      new Schema({
+        name: String,
+        validated: Boolean,
+        epicStories: [],
+      }).loadClass(Progetto),
     );
   }
 
+  private convertToClass(obj) {
+    return new Progetto(obj.name, obj.validated, obj.epicStories);
+  }
+
   async findAll(): Promise<Progetto[]> {
-    return await this.ProgettoModel.find({});
+    return (await this.ProgettoModel.find({})).map((p) =>
+      this.convertToClass(p),
+    );
   }
   async findById(id: any): Promise<Progetto> {
-    return await this.ProgettoModel.findById(id);
+    return this.convertToClass(await this.ProgettoModel.findById(id));
   }
 
   async insertProgetto(progetto: Progetto): Promise<string> {
