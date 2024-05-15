@@ -33,6 +33,18 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    addProgetto: {
+      handler: "lambda/add_progetto.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/add_progetto",
+            cors: true,
+          },
+        },
+      ],
+    },
     login: {
       handler: "lambda/login.handler",
       events: [

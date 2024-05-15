@@ -1,5 +1,5 @@
 import { UserDao } from "./user_dao";
-import { User } from "../user";
+import { Role, User } from "../user";
 import { Mongoose } from "../../database/mongoose";
 import { Schema } from "mongoose";
 import { Model } from "mongoose";
@@ -33,5 +33,23 @@ export class UserMongoose implements UserDao {
   }
   deleteUser(user: User): Promise<boolean> {
     throw new Error("Method not implemented.");
+  }
+  async addToProject(
+    userId: any,
+    projectId: string,
+    role: Role,
+  ): Promise<boolean> {
+    this.UserModel.updateOne(
+      { id: userId },
+      {
+        $push: {
+          projects: {
+            id: projectId,
+            role,
+          },
+        },
+      },
+    );
+    return true;
   }
 }

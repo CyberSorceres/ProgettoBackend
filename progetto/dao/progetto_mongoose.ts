@@ -23,12 +23,12 @@ export class ProgettoMongoose implements ProgettoDao {
     return await this.ProgettoModel.findById(id);
   }
 
-  async insertProgetto(progetto: Progetto): Promise<boolean> {
+  async insertProgetto(progetto: Progetto): Promise<string> {
     try {
-      await new this.ProgettoModel(progetto).save();
-      return true;
+      const ret = await new this.ProgettoModel(progetto).save();
+      return ret._id;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 

@@ -4,23 +4,28 @@ export enum Role {
   USER,
 }
 
+interface ProjectData {
+  id: string;
+  role: Role;
+}
+
 export class User {
   private id: string;
   /**
    * Mappa progettoId -> Ruolo
    */
-  private projects: Map<string, Role> = new Map();
+  private projects: ProjectData[] = [];
 
   getProjectRole(projectId: string) {
-    return this.projects.get(projectId);
+    return this.projects.find((p) => p.id === projectId)?.role;
   }
 
   getProjectIds(): string[] {
-    return Array.from(this.projects.keys());
+    return this.projects.map((p) => p.id);
   }
 
   addToProject(projectId: string, role: Role) {
-    this.projects.set(projectId, role);
+    this.projects.push({ id: projectId, role });
   }
 
   get Id(): string {
