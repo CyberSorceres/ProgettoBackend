@@ -197,6 +197,26 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    bedrock: {
+      handler: "lambda/bedrock.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/bedrock",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     login: {
       handler: "lambda/login.handler",
       events: [
