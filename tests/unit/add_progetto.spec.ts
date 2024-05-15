@@ -19,7 +19,6 @@ describe("Test get progetti", () => {
       statusCode: 200,
       body: JSON.stringify({ ok: true, projectId: "1" }),
     });
-    user.getProjectIds();
     expect(user.getProjectIds()).toStrictEqual(["1"]);
     expect(user.getProjectRole("1")).toBe(Role.PM);
     expect((await progettoDao.findById("1")).Name).toBe("test project");
