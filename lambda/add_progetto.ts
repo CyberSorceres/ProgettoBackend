@@ -20,7 +20,6 @@ export const addProgetto = async (
   userId: string,
   body: object,
 ) => {
-  const progetti = await progettoDao.findAll();
   const user = await userDao.findById(userId);
   if (!user) {
     await userDao.insertUser(new User(userId));
