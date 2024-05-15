@@ -177,6 +177,26 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    getNotifications: {
+      handler: "lambda/get_notifications.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/notifications",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     login: {
       handler: "lambda/login.handler",
       events: [
