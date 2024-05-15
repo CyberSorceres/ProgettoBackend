@@ -1,5 +1,5 @@
 import { UserDao } from "./user_dao";
-import { User } from "../user";
+import { Role, User } from "../user";
 import { Mongoose } from "../../database/mongoose";
 import { Schema } from "mongoose";
 import { Model } from "mongoose";
@@ -11,12 +11,21 @@ export class UserMongoose implements UserDao {
     this.mongoose = mongoose;
     this.UserModel = this.mongoose.connection.model<User>(
       "User",
-      new Schema().loadClass(User),
+      new Schema({
+        id: String,
+        projects: [
+          {
+            id: String,
+            role: Number,
+          },
+        ],
+      }).loadClass(User),
     );
   }
   async findById(id: any): Promise<User> {
     const user = await this.UserModel.findOne({ id });
-    return new User(user.id);
+    if (!user) return null;
+    return new User(user.id, user.projects);
   }
   async insertUser(user: User): Promise<boolean> {
     try {
@@ -33,5 +42,23 @@ export class UserMongoose implements UserDao {
   }
   deleteUser(user: User): Promise<boolean> {
     throw new Error("Method not implemented.");
+  }
+  async addToProject(
+    userId: any,
+    projectId: string,
+    role: Role,
+  ): Promise<boolean> {
+    await this.UserModel.findOneAndUpdate(
+      { id: userId },
+      {
+        $push: {
+          projects: {
+            id: projectId,
+            role,
+          },
+        },
+      },
+    );
+    return true;
   }
 }

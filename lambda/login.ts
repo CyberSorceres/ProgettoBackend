@@ -2,10 +2,14 @@ import {
   CognitoIdentityProviderClient,
   AdminInitiateAuthCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
+import { UserDao } from "../user/dao/user_dao";
+import { User } from "../user/user";
+import { Mongoose } from "../database/mongoose";
+import { UserMongoose } from "../user/dao/user_mongoose";
 
 const { USER_POOL_ID: userPoolId, CLIENT_ID: clientId } = process.env;
 
-export const handler = async (event) => {
+export const register = async (event, userDao: UserDao) => {
   try {
     const { email, password } = JSON.parse(event.body);
     const cognito = new CognitoIdentityProviderClient();
@@ -22,6 +26,8 @@ export const handler = async (event) => {
     const response = await cognito.send(
       new AdminInitiateAuthCommand(params as any),
     );
+
+    userDao.insertUser(new User(response.AuthenticationResult.AccessToken));
 
     return {
       statusCode: 200,
@@ -41,4 +47,9 @@ export const handler = async (event) => {
       body: JSON.stringify({ error: e }),
     };
   }
+};
+
+export const handler = async (event) => {
+  const mongoose = await Mongoose.create(process.env.DB_URL);
+  return register(event, new UserMongoose(mongoose));
 };

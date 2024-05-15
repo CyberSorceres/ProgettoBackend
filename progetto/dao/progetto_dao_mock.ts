@@ -8,13 +8,13 @@ export class ProgettoDaoMock implements ProgettoDao {
     return ProgettoDaoMock.progetti;
   }
   async findById(id): Promise<Progetto> {
-    return ProgettoDaoMock.progetti.find((p) => p.id === id);
+    return ProgettoDaoMock.progetti.find((p) => p.Id === id);
   }
 
-  async insertProgetto(progetto: Progetto): Promise<boolean> {
-    progetto.id = ++ProgettoDaoMock.counter;
+  async insertProgetto(progetto: Progetto): Promise<string> {
+    progetto.Id = (++ProgettoDaoMock.counter).toString();
     ProgettoDaoMock.progetti.push(progetto);
-    return true;
+    return progetto.Id;
   }
   async updateProgetto(progetto: Progetto): Promise<boolean> {
     const i = ProgettoDaoMock.progetti.findIndex((p) => p.id === progetto.id);
