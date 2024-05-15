@@ -42,6 +42,29 @@ export class ProgettoDaoMock implements ProgettoDao {
     progetto.EpicStories.find((e) => e._id === epicStoryId).UserStories.push(
       userStory,
     );
+    userStory.Id = (++this.counter).toString();
+    return true;
+  }
+
+  private async getUserStory(id, userStoryId): Promise<UserStory> {
+    const progetto = await this.findById(id);
+    for (const epicStory of progetto.EpicStories) {
+      for (const userStory of epicStory.UserStories) {
+        if (userStory.Id === userStoryId) return userStory;
+      }
+    }
+  }
+
+  async assignDev(id, userStoryId, userId): Promise<boolean> {
+    const userStory = await this.getUserStory(id, userStoryId);
+    if (!userStory) return false;
+    userStory.Assigned = userId;
+    return true;
+  }
+  async setUnitTest(id, userStoryId, unitTest: string): Promise<boolean> {
+    const userStory = await this.getUserStory(id, userStoryId);
+    if (!userStory) return false;
+    userStory.UnitTest = unitTest;
     return true;
   }
 }

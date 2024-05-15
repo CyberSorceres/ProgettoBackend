@@ -12,9 +12,15 @@ export class ProgettoMongoose implements ProgettoDao {
 
   constructor(mongoose: Mongoose) {
     this.mongoose = mongoose;
+    const userStorySchema = new Schema({
+      tag: String,
+      description: String,
+      assigned: String,
+      unitTest: String,
+    });
     const epicStorySchema = new Schema({
       description: String,
-      userStories: [],
+      userStories: [userStorySchema],
     });
     this.ProgettoModel = this.mongoose.connection.model<Progetto>(
       "Progetto",
@@ -31,7 +37,21 @@ export class ProgettoMongoose implements ProgettoDao {
       obj.name,
       obj.validated,
       obj.epicStories.map(
-        (epic) => new EpicStory(epic.description, epic.userStories, epic._id),
+        (epic) =>
+          new EpicStory(
+            epic.description,
+            epic.userStories.map(
+              (u) =>
+                new UserStory(
+                  u.tag,
+                  u.description,
+                  u.assigned,
+                  u.unitTest,
+                  u._id,
+                ),
+            ),
+            epic._id,
+          ),
       ),
     );
   }
@@ -95,6 +115,43 @@ export class ProgettoMongoose implements ProgettoDao {
       {
         $push: {
           "epicStories.$.userStories": userStory,
+        },
+      },
+    );
+    return true;
+  }
+
+  async assignDev(id, userStoryId, userId): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": userStoryId,
+          },
+        },
+      },
+      {
+        $set: {
+          "epicStories.$.userStories.$.assigned": userId,
+        },
+      },
+    );
+    return true;
+  }
+  async setUnitTest(id, userStoryId, unitTest: string): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": userStoryId,
+          },
+        },
+      },
+      {
+        $set: {
+          "epicStories.$.userStories.$.unitTest": unitTest,
         },
       },
     );

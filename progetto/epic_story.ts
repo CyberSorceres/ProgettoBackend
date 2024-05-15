@@ -20,7 +20,11 @@ export class EpicStory {
     return this.userStories;
   }
 
-  constructor(description: string, userStories: UserStory[], _id: string = "") {
+  constructor(
+    description: string,
+    userStories: UserStory[] = [],
+    _id: string = "",
+  ) {
     this.description = description;
     this.userStories = userStories;
     this._id = _id;
