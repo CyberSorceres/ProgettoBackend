@@ -1,5 +1,6 @@
 import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
+import { UserStory } from "../user_story";
 
 export interface ProgettoDao {
   findAll(): Promise<Progetto[]>;
@@ -9,4 +10,5 @@ export interface ProgettoDao {
   updateProgetto(progetto: Progetto): Promise<boolean>;
   deleteProgetto(progetto: Progetto): Promise<boolean>;
   insertEpicStory(id, epicStory: EpicStory): Promise<boolean>;
+  insertUserStory(id, epicStoryId, userStory: UserStory): Promise<boolean>;
 }
