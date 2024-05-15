@@ -14,7 +14,7 @@ describe("Test get progetti", () => {
     progettoDao = new ProgettoDaoMock();
     userDao = new UserMockDao();
     user = new User("2");
-    userDao.insertUser(user);
+    await userDao.insertUser(user);
     await progettoDao.insertProgetto(new Progetto("test", false, []));
   });
   it("returns every project", async () => {
