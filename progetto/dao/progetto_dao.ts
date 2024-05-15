@@ -1,3 +1,4 @@
+import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
 
 export interface ProgettoDao {
@@ -7,4 +8,5 @@ export interface ProgettoDao {
   insertProgetto(progetto: Progetto): Promise<string>;
   updateProgetto(progetto: Progetto): Promise<boolean>;
   deleteProgetto(progetto: Progetto): Promise<boolean>;
+  insertEpicStory(id, epicStory: EpicStory): Promise<boolean>;
 }

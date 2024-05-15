@@ -3,6 +3,7 @@ import { Progetto } from "../progetto";
 import { Mongoose } from "../../database/mongoose";
 import { Schema } from "mongoose";
 import { Model } from "mongoose";
+import { EpicStory } from "../epic_story";
 
 export class ProgettoMongoose implements ProgettoDao {
   private mongoose: Mongoose;
@@ -57,5 +58,17 @@ export class ProgettoMongoose implements ProgettoDao {
     } catch (e) {
       return false;
     }
+  }
+
+  async insertEpicStory(id, epicStory: EpicStory): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          epicStories: epicStory,
+        },
+      },
+    );
+    return true;
   }
 }
