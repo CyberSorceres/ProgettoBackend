@@ -97,6 +97,86 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    acceptInvite: {
+      handler: "lambda/accept_invite.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/accept_invite",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    invite: {
+      handler: "lambda/invite.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/invite",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    assignDev: {
+      handler: "lambda/assign_dev.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/assign_dev",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    setUnitTest: {
+      handler: "lambda/set_unit_test.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/set_unit_test",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     login: {
       handler: "lambda/login.handler",
       events: [

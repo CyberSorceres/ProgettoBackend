@@ -1,22 +1,57 @@
+import { User } from "../user/user";
+
 export class UserStory {
-  #tag: string;
-  #description: string;
-  get description(): string {
-    return this.#description;
+  private tag: string;
+  private description: string;
+  private assigned?: User;
+  private unitTest?: string;
+  private id: string;
+
+  get Description(): string {
+    return this.description;
   }
-  set description(value: string) {
-    this.#description = value;
+  set Description(value: string) {
+    this.description = value;
+  }
+  get UnitTest(): string {
+    return this.unitTest;
+  }
+  set UnitTest(value: string) {
+    this.unitTest = value;
   }
 
-  get tag(): string {
-    return this.#tag;
+  get Tag(): string {
+    return this.tag;
   }
-  set tag(value: string) {
-    this.#tag = value;
+  set Tag(value: string) {
+    this.tag = value;
   }
 
-  constructor(tag: string, description: string) {
-    this.#tag = tag;
-    this.#description = description;
+  get Assigned(): User {
+    return this.assigned;
+  }
+  set Assigned(value: User) {
+    this.assigned = value;
+  }
+
+  get Id(): string {
+    return this.id;
+  }
+  set Id(value: string) {
+    this.id = value;
+  }
+
+  constructor(
+    tag: string,
+    description: string,
+    assigned?: User,
+    unitTest?: string,
+    id?: string,
+  ) {
+    this.tag = tag;
+    this.description = description;
+    this.assigned = assigned;
+    this.unitTest = unitTest;
+    this.id = id;
   }
 }
