@@ -20,6 +20,10 @@ export class EpicStory {
     return this.userStories;
   }
 
+  get Id() {
+    return this._id;
+  }
+
   constructor(
     description: string,
     userStories: UserStory[] = [],
