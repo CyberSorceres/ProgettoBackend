@@ -157,4 +157,58 @@ export class ProgettoMongoose implements ProgettoDao {
     );
     return true;
   }
+  async getEpicStory(id, epicStoryId): Promise<EpicStory> {
+    const query = await this.ProgettoModel.aggregate().project({
+      epicStories: {
+        $filter: {
+          input: "$epicStories",
+          as: "epicStory",
+          cond: {
+            $eq: ["$$epicStory._id", epicStoryId],
+          },
+        },
+      },
+    });
+    if (!query.length || !query[0].epicStories.length) {
+      return null;
+    }
+    return query[0].epicStories[0];
+  }
+  async getUserStory(id, userStoryId): Promise<UserStory> {
+    try {
+      return (
+        await this.ProgettoModel.aggregate([
+          {
+            $match: { _id: id },
+          },
+          {
+            $unwind: "$epicStories",
+          },
+          {
+            $project: {
+              "epicStories.userStories": {
+                $filter: {
+                  input: "$epicStories.userStories",
+                  as: "epicStory",
+                  cond: {
+                    $eq: ["$$epicStory._id", userStoryId],
+                  },
+                },
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "$_id",
+              userStories: {
+                $first: "$epicStories.userStories",
+              },
+            },
+          },
+        ])
+      )[0].userStories[0];
+    } catch (e) {
+      return null;
+    }
+  }
 }

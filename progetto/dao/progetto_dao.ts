@@ -13,4 +13,6 @@ export interface ProgettoDao {
   insertUserStory(id, epicStoryId, userStory: UserStory): Promise<boolean>;
   assignDev(id, userStoryId, userId): Promise<boolean>;
   setUnitTest(id, userStoryId, unitTest: string): Promise<boolean>;
+  getEpicStory(id, epicStoryId): Promise<EpicStory>;
+  getUserStory(id, userStoryId): Promise<UserStory>;
 }
