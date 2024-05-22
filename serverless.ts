@@ -12,6 +12,8 @@ const serverlessConfiguration: AWS = {
     runtime: "nodejs20.x",
     environment: {
       DB_URL: process.env.DB_URL ?? "",
+      OPENAI_ORG_ID: process.env.OPENAI_ORG_ID ?? "",
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
       USER_POOL_ID: {
         Ref: "UserPool",
       },
@@ -239,7 +241,7 @@ const serverlessConfiguration: AWS = {
       ],
     },
     bedrock: {
-      handler: "lambda/bedrock.handler",
+      handler: "lambda/ai.handleBedrock",
       events: [
         {
           http: {
@@ -258,6 +260,27 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    chatGPT: {
+      handler: "lambda/ai.handleChatGPT",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/chatgpt",
+            cors: true,
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+
     login: {
       handler: "lambda/login.handler",
       events: [
