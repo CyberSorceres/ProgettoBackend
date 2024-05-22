@@ -44,7 +44,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getProgetti",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -64,7 +66,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getEpicStory",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -84,7 +88,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getUserStory",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -105,7 +111,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/add_progetto",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -125,7 +133,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/add_epic_story",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -145,7 +155,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/accept_invite",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -165,7 +177,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/invite",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -185,7 +199,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/assign_dev",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -205,7 +221,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/set_unit_test",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -225,7 +243,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/notifications",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -245,14 +265,8 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/bedrock",
-            cors: true,
-            authorizer: {
-              name: "PrivateAuthorizer",
-              type: "COGNITO_USER_POOLS",
-              arn: {
-                "Fn::GetAtt": ["UserPool", "Arn"],
-              },
-              claims: ["email"],
+            cors: {
+              allowCredentials: true,
             },
           },
         },
@@ -265,7 +279,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "post",
             path: "/login",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
           },
         },
       ],
@@ -277,7 +293,9 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "post",
             path: "/register",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+            },
           },
         },
       ],
@@ -315,6 +333,19 @@ const serverlessConfiguration: AWS = {
           AccessTokenValidity: 5,
           IdTokenValidity: 5,
           ExplicitAuthFlows: ["ADMIN_NO_SRP_AUTH"],
+        },
+      },
+      GatewayResponseDefault4XX: {
+        Type: "AWS::ApiGateway::GatewayResponse",
+        Properties: {
+          ResponseParameters: {
+            "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+            "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+          },
+          ResponseType: "DEFAULT_4XX",
+          RestApiId: {
+            Ref: "ApiGatewayRestApi",
+          },
         },
       },
     },
