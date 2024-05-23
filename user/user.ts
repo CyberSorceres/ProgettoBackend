@@ -17,7 +17,8 @@ export class User {
   private projects: ProjectData[] = [];
 
   getProjectRole(projectId: string) {
-    return this.projects.find((p) => p.id === projectId)?.role;
+    return this.projects.find((p) => p.id.toString() === projectId.toString())
+      ?.role;
   }
 
   getProjectIds(): string[] {
