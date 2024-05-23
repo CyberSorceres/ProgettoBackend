@@ -135,6 +135,7 @@ const serverlessConfiguration: AWS = {
             path: "/add_epic_story",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173/",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -157,6 +158,7 @@ const serverlessConfiguration: AWS = {
             path: "/accept_invite",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -179,6 +181,7 @@ const serverlessConfiguration: AWS = {
             path: "/invite",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -201,6 +204,7 @@ const serverlessConfiguration: AWS = {
             path: "/assign_dev",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -223,6 +227,7 @@ const serverlessConfiguration: AWS = {
             path: "/set_unit_test",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -245,6 +250,7 @@ const serverlessConfiguration: AWS = {
             path: "/notifications",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -267,6 +273,7 @@ const serverlessConfiguration: AWS = {
             path: "/bedrock",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
           },
         },
@@ -281,6 +288,7 @@ const serverlessConfiguration: AWS = {
             path: "/login",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
           },
         },
@@ -295,6 +303,7 @@ const serverlessConfiguration: AWS = {
             path: "/register",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
           },
         },
