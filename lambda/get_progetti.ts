@@ -22,6 +22,10 @@ export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return useCors(
-    getProgetti(new ProgettoMongoose(mongoose), new UserMongoose(mongoose), id),
+    await getProgetti(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+    ),
   );
 };
