@@ -38,6 +38,7 @@ export const handler = async (event) => {
         Permanent: true,
       }),
     );
+
     return {
       statusCode: 200,
       headers: {
