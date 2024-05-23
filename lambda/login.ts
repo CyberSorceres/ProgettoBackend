@@ -6,6 +6,7 @@ import { UserDao } from "../user/dao/user_dao";
 import { User } from "../user/user";
 import { Mongoose } from "../database/mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
+import { jwtDecode } from "jwt-decode";
 
 const { USER_POOL_ID: userPoolId, CLIENT_ID: clientId } = process.env;
 
@@ -26,8 +27,9 @@ export const register = async (event, userDao: UserDao) => {
     const response = await cognito.send(
       new AdminInitiateAuthCommand(params as any),
     );
-
-    userDao.insertUser(new User(response.AuthenticationResult.AccessToken));
+    await userDao.insertUser(
+      new User(jwtDecode(response.AuthenticationResult.IdToken).sub),
+    );
 
     return {
       statusCode: 200,

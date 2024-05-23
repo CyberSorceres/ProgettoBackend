@@ -29,9 +29,9 @@ export class UserMongoose implements UserDao {
   }
   async insertUser(user: User): Promise<boolean> {
     try {
-      const a = await this.UserModel.findOne({ id: 1 });
-
-      await new this.UserModel(user).save();
+      if (!(await this.findById(user.Id))) {
+        await new this.UserModel(user).save();
+      }
       return true;
     } catch (e) {
       return false;

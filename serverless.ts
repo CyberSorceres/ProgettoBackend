@@ -46,6 +46,7 @@ const serverlessConfiguration: AWS = {
             path: "/getProgetti",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -68,6 +69,7 @@ const serverlessConfiguration: AWS = {
             path: "/getEpicStory",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -90,6 +92,7 @@ const serverlessConfiguration: AWS = {
             path: "/getUserStory",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
@@ -113,6 +116,7 @@ const serverlessConfiguration: AWS = {
             path: "/add_progetto",
             cors: {
               allowCredentials: true,
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",

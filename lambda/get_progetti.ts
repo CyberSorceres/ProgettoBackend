@@ -3,6 +3,7 @@ import { UserDao } from "../user/dao/user_dao";
 import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
+import { useCors } from "./use_cors";
 
 export const getProgetti = async (
   progettoDao: ProgettoDao,
@@ -20,9 +21,7 @@ export const getProgetti = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return getProgetti(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
+  return useCors(
+    getProgetti(new ProgettoMongoose(mongoose), new UserMongoose(mongoose), id),
   );
 };
