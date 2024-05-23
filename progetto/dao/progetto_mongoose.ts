@@ -53,6 +53,7 @@ export class ProgettoMongoose implements ProgettoDao {
             epic._id,
           ),
       ),
+      obj._id,
     );
   }
 

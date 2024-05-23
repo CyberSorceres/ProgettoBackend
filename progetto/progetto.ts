@@ -28,10 +28,16 @@ export class Progetto {
     this.id = value;
   }
 
-  constructor(name: string, validated: boolean, epicStories: EpicStory[] = []) {
+  constructor(
+    name: string,
+    validated: boolean,
+    epicStories: EpicStory[] = [],
+    id: string,
+  ) {
     this.name = name;
     this.validated = validated;
     this.epicStories = epicStories;
+    this.id = id;
   }
 
   addEpicStory(epicStory: EpicStory) {
