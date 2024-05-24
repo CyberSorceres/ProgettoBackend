@@ -4,6 +4,7 @@ import { InviteDao } from "../invite/dao/invite_dao";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Role } from "../user/user";
+import { useCors } from "./use_cors";
 
 export const acceptInvite = async (
   userDao: UserDao,
@@ -29,11 +30,12 @@ export const acceptInvite = async (
 
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
-  const mongoose = await Mongoose.create(process.env.DB_URL);
-  return acceptInvite(
+  const mongoose = await Mongoose.create(process.env.DB_URL); 
+  return useCors (await acceptInvite(
     new UserMongoose(mongoose),
     id,
     new InviteMongoose(mongoose),
     req.event.queryStringParameters.oinviteId,
-  );
+  ));
 };
+

@@ -7,6 +7,8 @@ import { User } from "../user/user";
 import { Mongoose } from "../database/mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { jwtDecode } from "jwt-decode";
+import { useCors } from "./use_cors";
+
 
 const { USER_POOL_ID: userPoolId, CLIENT_ID: clientId } = process.env;
 
@@ -53,5 +55,5 @@ export const register = async (event, userDao: UserDao) => {
 
 export const handler = async (event) => {
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return register(event, new UserMongoose(mongoose));
+  return useCors(await register(event, new UserMongoose(mongoose)));
 };

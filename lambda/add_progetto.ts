@@ -5,6 +5,7 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Progetto } from "../progetto/progetto";
 import { Role, User } from "../user/user";
+import { useCors } from "./use_cors";
 
 interface AddProgettoRequest {
   name: string;
@@ -44,10 +45,10 @@ export const addProgetto = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return addProgetto(
+  return useCors( await addProgetto(
     new ProgettoMongoose(mongoose),
     new UserMongoose(mongoose),
     id,
     JSON.parse(req.body),
-  );
+  ));
 };
