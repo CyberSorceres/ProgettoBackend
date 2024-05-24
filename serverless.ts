@@ -176,6 +176,29 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    addUserStory: {
+      handler: "lambda/add_user_story.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/add_user_story",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     acceptInvite: {
       handler: "lambda/accept_invite.handler",
       events: [
