@@ -5,6 +5,7 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Role } from "../user/user";
 import { UserStory } from "../progetto/user_story";
+import { useCors } from "./use_cors";
 
 interface AddEpicStoryRequest {
   projectId: string;
@@ -63,10 +64,12 @@ export const addUserStory = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return addUserStory(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    JSON.parse(req.body),
+  return useCors(
+    await addUserStory(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      JSON.parse(req.body),
+    ),
   );
 };

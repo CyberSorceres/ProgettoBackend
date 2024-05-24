@@ -4,6 +4,7 @@ import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Role } from "../user/user";
+import { useCors } from "./use_cors";
 
 interface SetUnitTestRequest {
   projectId: string;
@@ -56,10 +57,12 @@ export const setUnitTest = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return setUnitTest(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    JSON.parse(req.body),
+  return useCors(
+    await setUnitTest(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      JSON.parse(req.body),
+    ),
   );
 };

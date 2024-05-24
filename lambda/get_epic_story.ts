@@ -3,6 +3,7 @@ import { UserDao } from "../user/dao/user_dao";
 import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
+import { useCors } from "./use_cors";
 
 interface GetEpicStoryRequest {
   projectId: string;
@@ -46,10 +47,12 @@ export const getEpicStory = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return getEpicStory(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    req.queryStringParameters,
+  return useCors(
+    await getEpicStory(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      req.queryStringParameters,
+    ),
   );
 };
