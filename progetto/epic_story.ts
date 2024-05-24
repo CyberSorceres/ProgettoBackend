@@ -27,7 +27,7 @@ export class EpicStory {
   constructor(
     description: string,
     userStories: UserStory[] = [],
-    _id: string = null,
+    _id: string = undefined,
   ) {
     this.description = description;
     this.userStories = userStories;
