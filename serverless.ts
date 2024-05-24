@@ -60,6 +60,29 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    getProgetto: {
+      handler: "lambda/get_progetto.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/getProgetto",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     getEpicStory: {
       handler: "lambda/get_epic_story.handler",
       events: [

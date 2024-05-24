@@ -3,53 +3,42 @@ import { UserDao } from "../user/dao/user_dao";
 import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
+import { useCors } from "./use_cors";
 
-interface GetEpicStoryRequest {
-  projectId: string;
-  epicStoryId: string;
-}
-
-function validateBody(body: object): body is GetEpicStoryRequest {
-  return "projectId" in body && "epicStoryId" in body;
-}
-
-export const getEpicStory = async (
+export const getProgetto = async (
   progettoDao: ProgettoDao,
   userDao: UserDao,
   userId: string,
-  body: object,
+  queryParams: object,
 ) => {
-  const user = await userDao.findById(userId);
-
-  if (!validateBody(body)) {
+  if (!("projectId" in queryParams))
     return {
       statusCode: 400,
-      body: "invalid body",
+      body: "Invalid project id",
     };
-  }
-  if (!user.getProjectRole(body.projectId)) {
+  const progetto = await progettoDao.findById(queryParams.projectId);
+  const user = await userDao.findById(userId);
+  if (!user?.getProjectRole(progetto.Id)) {
     return {
       statusCode: 504,
       body: "Unauthorized",
     };
   }
-  const epicStories = await progettoDao.getEpicStory(
-    body.projectId,
-    body.epicStoryId,
-  );
   return {
     statusCode: 200,
-    body: JSON.stringify(epicStories),
+    body: JSON.stringify(progetto),
   };
 };
 
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return getEpicStory(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    req.queryStringParameters,
+  return useCors(
+    await getProgetto(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      req.queryStringParameters,
+    ),
   );
 };
