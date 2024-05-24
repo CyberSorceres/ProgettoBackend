@@ -162,7 +162,7 @@ const serverlessConfiguration: AWS = {
             path: "/add_epic_story",
             cors: {
               allowCredentials: true,
-              origin: "http://localhost:5173/",
+              origin: "http://localhost:5173",
             },
             authorizer: {
               name: "PrivateAuthorizer",
