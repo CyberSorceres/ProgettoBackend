@@ -50,6 +50,6 @@ export const handler = async (req) => {
     new ProgettoMongoose(mongoose),
     new UserMongoose(mongoose),
     id,
-    JSON.parse(req.body),
+    req.queryStringParameters,
   );
 };

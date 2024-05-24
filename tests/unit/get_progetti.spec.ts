@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getProgetti } from "../../lambda/get_progetti";
+import { getProgetto } from "../../lambda/get_progetto";
 import { getUserStory } from "../../lambda/get_user_story";
 import { getEpicStory } from "../../lambda/get_epic_story";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
@@ -73,5 +74,25 @@ describe("Test get progetti", () => {
     expect(res.statusCode).toBe(200);
     const body = JSON.parse(res.body);
     expect(body.description).toBe("userstory1");
+  });
+  it("returns correct project", async () => {
+    expect(
+      await getProgetto(progettoDao, userDao, "2", {
+        projectId: "1",
+      }),
+    ).toStrictEqual({
+      statusCode: 200,
+      body: JSON.stringify(await progettoDao.findById("1")),
+    });
+  });
+  it("fails when user is not in project", async () => {
+    expect(
+      await getProgetto(progettoDao, userDao, "1", {
+        projectId: "1",
+      }),
+    ).toStrictEqual({
+      statusCode: 504,
+      body: "Unauthorized",
+    });
   });
 });
