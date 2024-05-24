@@ -9,7 +9,6 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { jwtDecode } from "jwt-decode";
 import { useCors } from "./use_cors";
 
-
 const { USER_POOL_ID: userPoolId, CLIENT_ID: clientId } = process.env;
 
 export const register = async (event, userDao: UserDao) => {

@@ -7,7 +7,6 @@ import { Role } from "../user/user";
 import { v4 as uuidv4 } from "uuid";
 import { useCors } from "./use_cors";
 
-
 interface InviteBody {
   projectId: string;
   role: number;
@@ -58,10 +57,12 @@ export const invite = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return useCors(await invite(
-    new UserMongoose(mongoose),
-    id,
-    new InviteMongoose(mongoose),
-    JSON.parse(req.body),
-  ));
+  return useCors(
+    await invite(
+      new UserMongoose(mongoose),
+      id,
+      new InviteMongoose(mongoose),
+      JSON.parse(req.body),
+    ),
+  );
 };

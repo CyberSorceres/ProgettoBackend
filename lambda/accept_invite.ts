@@ -30,12 +30,13 @@ export const acceptInvite = async (
 
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
-  const mongoose = await Mongoose.create(process.env.DB_URL); 
-  return useCors (await acceptInvite(
-    new UserMongoose(mongoose),
-    id,
-    new InviteMongoose(mongoose),
-    req.event.queryStringParameters.oinviteId,
-  ));
+  const mongoose = await Mongoose.create(process.env.DB_URL);
+  return useCors(
+    await acceptInvite(
+      new UserMongoose(mongoose),
+      id,
+      new InviteMongoose(mongoose),
+      req.event.queryStringParameters.oinviteId,
+    ),
+  );
 };
-

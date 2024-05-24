@@ -56,10 +56,12 @@ export const addEpicStory = async (
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return useCors(await addEpicStory(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    JSON.parse(req.body),
-  ));
+  return useCors(
+    await addEpicStory(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      JSON.parse(req.body),
+    ),
+  );
 };
