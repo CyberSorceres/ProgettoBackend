@@ -1,6 +1,6 @@
 import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
-import { UserStory } from "../user_story";
+import { Feedback, UserStory } from "../user_story";
 
 export interface ProgettoDao {
   findAll(): Promise<Progetto[]>;
@@ -15,4 +15,5 @@ export interface ProgettoDao {
   setUnitTest(id, userStoryId, unitTest: string): Promise<boolean>;
   getEpicStory(id, epicStoryId): Promise<EpicStory>;
   getUserStory(id, userStoryId): Promise<UserStory>;
+  insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean>;
 }
