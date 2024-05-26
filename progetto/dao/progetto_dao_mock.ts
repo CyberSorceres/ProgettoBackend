@@ -82,4 +82,21 @@ export class ProgettoDaoMock implements ProgettoDao {
     epic.UserStories = epic.UserStories.filter((u) => u.Id !== userStoryId);
     return true;
   }
+  async getUserStoryByUser(
+    userId,
+  ): Promise<{ projectId: string; userStories: UserStory[] }[]> {
+    const res: Array<{ projectId: string; userStories: UserStory[] }> = [];
+    for (const progetto of this.progetti) {
+      const element = { projectId: progetto.Id, userStories: [] };
+      for (const epicStory of progetto.EpicStories) {
+        for (const userStory of epicStory.UserStories) {
+          element.userStories.push(userStory);
+        }
+      }
+      if (element.userStories.length) {
+        res.push(element);
+      }
+    }
+    return res;
+  }
 }

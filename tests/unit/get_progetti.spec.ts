@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getProgetti } from "../../lambda/get_progetti";
 import { getProgetto } from "../../lambda/get_progetto";
+import { getAssignedUserStory } from "../../lambda/get_assigned_user_story";
 import { getUserStory } from "../../lambda/get_user_story";
 import { getEpicStory } from "../../lambda/get_epic_story";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
@@ -93,6 +94,12 @@ describe("Test get progetti", () => {
     ).toStrictEqual({
       statusCode: 504,
       body: "Unauthorized",
+    });
+  });
+  it("returns user stories", async () => {
+    expect(await getAssignedUserStory(progettoDao, "1")).toStrictEqual({
+      statusCode: 200,
+      body: '[{"projectId":"1","userStories":[{"tag":"tag","description":"userstory1","id":"7","feedbacks":[]},{"tag":"tag","description":"userstory1","id":"8","feedbacks":[]}]}]',
     });
   });
 });

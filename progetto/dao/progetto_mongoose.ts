@@ -250,4 +250,33 @@ export class ProgettoMongoose implements ProgettoDao {
     );
     return true;
   }
+  async getUserStoryByUser(
+    userId,
+  ): Promise<{ projectId: string; userStories: UserStory[] }[]> {
+    return await this.ProgettoModel.aggregate([
+      {
+        $unwind: "$epicStories",
+      },
+      {
+        $project: {
+          "epicStories.userStories": {
+            $filter: {
+              input: "$epicStories.userStories",
+              as: "userStories",
+              cond: {
+                $eq: ["$$userStories.assigned", userId],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          projectId: "$_id",
+          userStories: "$epicStories.userStories",
+        },
+      },
+    ]);
+  }
 }
