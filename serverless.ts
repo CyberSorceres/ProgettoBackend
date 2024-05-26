@@ -129,7 +129,7 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
-    getUserStory: {
+    getAssignedUserStory: {
       handler: "lambda/get_assigned_user_story.handler",
       events: [
         {

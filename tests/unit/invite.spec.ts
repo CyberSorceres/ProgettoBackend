@@ -58,10 +58,13 @@ describe("invite tests", () => {
     const user2 = new User("3");
     await userDao.insertUser(user2);
     console.log(id);
-    expect(await acceptInvite(userDao, "3", inviteDao, id)).toStrictEqual({
+    expect(
+      await acceptInvite(userDao, "3", progettoDao, inviteDao, id),
+    ).toStrictEqual({
       body: JSON.stringify({ ok: true }),
       statusCode: 200,
     });
+    expect((await progettoDao.findById("1")).Users).toStrictEqual(["3"]);
     expect(user2.getProjectRole("1")).toBe(Role.DEV);
   });
 });

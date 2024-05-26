@@ -20,4 +20,5 @@ export interface ProgettoDao {
   getUserStoryByUser(
     userId,
   ): Promise<{ projectId: string; userStories: UserStory[] }[]>;
+  addToProject(id, userId): Promise<boolean>;
 }

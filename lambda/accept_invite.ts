@@ -5,10 +5,13 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Role } from "../user/user";
 import { useCors } from "./use_cors";
+import { ProgettoDao } from "../progetto/dao/progetto_dao";
+import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 
 export const acceptInvite = async (
   userDao: UserDao,
   userId: string,
+  progettoDao: ProgettoDao,
   inviteDao: InviteDao,
   inviteId: string,
 ) => {
@@ -21,7 +24,7 @@ export const acceptInvite = async (
     };
   }
   await userDao.addToProject(user.Id, invite.projectId, invite.role);
-
+  await progettoDao.addToProject(invite.projectId, user.Id);
   return {
     statusCode: 200,
     body: JSON.stringify({ ok: true }),
@@ -35,6 +38,7 @@ export const handler = async (req) => {
     await acceptInvite(
       new UserMongoose(mongoose),
       id,
+      new ProgettoMongoose(mongoose),
       new InviteMongoose(mongoose),
       req.event.queryStringParameters.oinviteId,
     ),
