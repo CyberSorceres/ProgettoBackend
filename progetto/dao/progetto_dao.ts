@@ -16,4 +16,5 @@ export interface ProgettoDao {
   getEpicStory(id, epicStoryId): Promise<EpicStory>;
   getUserStory(id, userStoryId): Promise<UserStory>;
   insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean>;
+  deleteUserStory(id, userStoryId): Promise<boolean>;
 }

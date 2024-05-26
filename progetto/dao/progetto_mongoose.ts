@@ -232,4 +232,20 @@ export class ProgettoMongoose implements ProgettoDao {
     );
     return true;
   }
+
+  async deleteUserStory(id, userStoryId): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $pull: {
+          "epicStories.$[].userStories": {
+            _id: userStoryId,
+          },
+        },
+      },
+    );
+    return true;
+  }
 }

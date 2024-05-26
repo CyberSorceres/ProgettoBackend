@@ -74,4 +74,12 @@ export class ProgettoDaoMock implements ProgettoDao {
     userStory.Feedbacks.push(feedback);
     return true;
   }
+  async deleteUserStory(id, userStoryId): Promise<boolean> {
+    const project = await this.findById(id);
+    const epic = project.EpicStories.find((e) =>
+      e.UserStories.find((u) => u.Id === userStoryId),
+    );
+    epic.UserStories = epic.UserStories.filter((u) => u.Id !== userStoryId);
+    return true;
+  }
 }

@@ -20,6 +20,10 @@ export class EpicStory {
     return this.userStories;
   }
 
+  set UserStories(value: UserStory[]) {
+    this.userStories = value;
+  }
+
   get Id() {
     return this._id;
   }

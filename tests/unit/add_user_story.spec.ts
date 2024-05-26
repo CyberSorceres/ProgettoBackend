@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { addUserStory } from "../../lambda/add_user_story";
+import { deleteUserStory } from "../../lambda/delete_user_story";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
 import { UserMockDao } from "../../user/dao/user_mock_dao";
 import { Role, User } from "../../user/user";
@@ -47,6 +48,18 @@ describe("Test get progetti", () => {
     expect(
       (await progettoDao.findById("1")).EpicStories[0].UserStories,
     ).toHaveLength(1);
+    expect(
+      await deleteUserStory(progettoDao, userDao, "2", {
+        projectId: "1",
+        userStoryId: "3",
+      }),
+    ).toStrictEqual({
+      statusCode: 200,
+      body: JSON.stringify({ ok: true }),
+    });
+    expect(
+      (await progettoDao.findById("1")).EpicStories[0].UserStories,
+    ).toHaveLength(0);
   });
   it("returns invalid body when body is invalid", async () => {
     expect(
