@@ -29,6 +29,7 @@ export class ProgettoMongoose implements ProgettoDao {
         name: String,
         validated: Boolean,
         epicStories: [epicStorySchema],
+        ai: String,
       }).loadClass(Progetto),
     );
   }
@@ -55,6 +56,7 @@ export class ProgettoMongoose implements ProgettoDao {
           ),
       ),
       obj._id,
+      obj.ai,
     );
   }
 

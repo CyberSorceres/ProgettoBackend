@@ -9,10 +9,11 @@ import { useCors } from "./use_cors";
 
 interface AddProgettoRequest {
   name: string;
+  ai: string;
 }
 
 function validateBody(body: object): body is AddProgettoRequest {
-  return "name" in body;
+  return "name" in body && "ai" in body;
 }
 
 export const addProgetto = async (
@@ -33,7 +34,7 @@ export const addProgetto = async (
     };
 
   const id = await progettoDao.insertProgetto(
-    new Progetto(body.name, false, []),
+    new Progetto(body.name, false, [], undefined, body.ai),
   );
   await userDao.addToProject(userId, id, Role.PM);
   return {

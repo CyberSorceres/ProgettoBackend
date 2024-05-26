@@ -5,6 +5,7 @@ export class Progetto {
   private validated: boolean;
   private epicStories: EpicStory[];
   private id: string;
+  private ai: string;
 
   get Name(): string {
     return this.name;
@@ -27,17 +28,24 @@ export class Progetto {
   set Id(value: string) {
     this.id = value;
   }
-
+  get Ai(): string {
+    return this.ai;
+  }
+  set Ai(value: string) {
+    this.ai = value;
+  }
   constructor(
     name: string,
     validated: boolean,
     epicStories: EpicStory[] = [],
     id: string,
+    ai: string = "",
   ) {
     this.name = name;
     this.validated = validated;
     this.epicStories = epicStories;
     this.id = id;
+    this.ai = ai;
   }
 
   addEpicStory(epicStory: EpicStory) {
