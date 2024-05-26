@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { setUnitTest } from "../../lambda/set_unit_test";
 import { assignDev } from "../../lambda/assign_dev";
+import { insertFeedback } from "../../lambda/insert_feedback";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
 import { UserMockDao } from "../../user/dao/user_mock_dao";
 import { Role, User } from "../../user/user";
@@ -45,6 +46,16 @@ describe("Test set unit test", () => {
       statusCode: 504,
       body: "Unauthorized",
     });
+    expect(
+      await insertFeedback(progettoDao, userDao, "2", {
+        projectId: "1",
+        userStoryId: "3",
+        feedback: "Hello",
+      }),
+    ).toStrictEqual({
+      statusCode: 504,
+      body: "Unauthorized",
+    });
   });
   it("sets unit test", async () => {
     await userDao.addToProject("2", "1", Role.PM);
@@ -72,5 +83,18 @@ describe("Test set unit test", () => {
       body: JSON.stringify({ ok: true }),
     });
     expect(userStory.Assigned).toBe("4");
+    expect(
+      await insertFeedback(progettoDao, userDao, "2", {
+        projectId: "1",
+        userStoryId: "3",
+        feedback: "Hello",
+      }),
+    ).toStrictEqual({
+      statusCode: 200,
+      body: JSON.stringify({ ok: true }),
+    });
+    expect(userStory.Feedbacks).toStrictEqual([
+      { creatorId: "2", description: "Hello" },
+    ]);
   });
 });

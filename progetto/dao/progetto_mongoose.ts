@@ -4,7 +4,7 @@ import { Mongoose } from "../../database/mongoose";
 import { Schema } from "mongoose";
 import { Model } from "mongoose";
 import { EpicStory } from "../epic_story";
-import { UserStory } from "../user_story";
+import { UserStory, Feedback } from "../user_story";
 
 export class ProgettoMongoose implements ProgettoDao {
   private mongoose: Mongoose;
@@ -17,6 +17,7 @@ export class ProgettoMongoose implements ProgettoDao {
       description: String,
       assigned: String,
       unitTest: String,
+      feedback: [{ creatorId: String, description: String }],
     });
     const epicStorySchema = new Schema({
       description: String,
@@ -211,5 +212,24 @@ export class ProgettoMongoose implements ProgettoDao {
     } catch (e) {
       return null;
     }
+  }
+
+  async insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": userStoryId,
+          },
+        },
+      },
+      {
+        $push: {
+          "epicStories.$.userStories.$.feedbacks": feedback,
+        },
+      },
+    );
+    return true;
   }
 }

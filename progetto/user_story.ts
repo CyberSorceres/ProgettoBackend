@@ -1,11 +1,17 @@
 import { User } from "../user/user";
 
+export interface Feedback {
+  creatorId: string;
+  description: string;
+}
+
 export class UserStory {
   private tag: string;
   private description: string;
   private assigned?: User;
   private unitTest?: string;
   private id: string;
+  private feedbacks: Feedback[];
 
   get Description(): string {
     return this.description;
@@ -41,17 +47,23 @@ export class UserStory {
     this.id = value;
   }
 
+  get Feedbacks() {
+    return this.feedbacks;
+  }
+
   constructor(
     tag: string,
     description: string,
     assigned?: User,
     unitTest?: string,
     id?: string,
+    feedbacks: Feedback[] = [],
   ) {
     this.tag = tag;
     this.description = description;
     this.assigned = assigned;
     this.unitTest = unitTest;
     this.id = id;
+    this.feedbacks = feedbacks;
   }
 }

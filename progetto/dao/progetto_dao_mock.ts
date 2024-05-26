@@ -1,6 +1,6 @@
 import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
-import { UserStory } from "../user_story";
+import { UserStory, Feedback } from "../user_story";
 import { ProgettoDao } from "./progetto_dao";
 
 export class ProgettoDaoMock implements ProgettoDao {
@@ -46,15 +46,6 @@ export class ProgettoDaoMock implements ProgettoDao {
     return true;
   }
 
-  private async getUserStory(id, userStoryId): Promise<UserStory> {
-    const progetto = await this.findById(id);
-    for (const epicStory of progetto.EpicStories) {
-      for (const userStory of epicStory.UserStories) {
-        if (userStory.Id === userStoryId) return userStory;
-      }
-    }
-  }
-
   async assignDev(id, userStoryId, userId): Promise<boolean> {
     const userStory = await this.getUserStory(id, userStoryId);
     if (!userStory) return false;
@@ -76,5 +67,11 @@ export class ProgettoDaoMock implements ProgettoDao {
     return project.EpicStories.map((e) =>
       e.UserStories.find((u) => u.Id === userStoryId),
     ).find((u) => u);
+  }
+  async insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean> {
+    const userStory = await this.getUserStory(id, userStoryId);
+    if (!userStory) return false;
+    userStory.Feedbacks.push(feedback);
+    return true;
   }
 }
