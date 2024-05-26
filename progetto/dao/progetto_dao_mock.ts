@@ -99,4 +99,8 @@ export class ProgettoDaoMock implements ProgettoDao {
     }
     return res;
   }
+  async addToProject(id, userId): Promise<boolean> {
+    (await this.findById(id)).Users.push(userId);
+    return true;
+  }
 }

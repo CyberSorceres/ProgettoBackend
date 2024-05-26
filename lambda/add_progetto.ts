@@ -37,6 +37,7 @@ export const addProgetto = async (
     new Progetto(body.name, false, [], undefined, body.ai),
   );
   await userDao.addToProject(userId, id, Role.PM);
+  await progettoDao.addToProject(id, userId);
   return {
     statusCode: 200,
     body: JSON.stringify({ ok: true, projectId: id }),

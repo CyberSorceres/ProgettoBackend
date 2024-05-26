@@ -30,6 +30,7 @@ export class ProgettoMongoose implements ProgettoDao {
         validated: Boolean,
         epicStories: [epicStorySchema],
         ai: String,
+        users: [String],
       }).loadClass(Progetto),
     );
   }
@@ -57,6 +58,7 @@ export class ProgettoMongoose implements ProgettoDao {
       ),
       obj._id,
       obj.ai,
+      obj.users,
     );
   }
 
@@ -278,5 +280,16 @@ export class ProgettoMongoose implements ProgettoDao {
         },
       },
     ]);
+  }
+  async addToProject(id, userId): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          users: userId,
+        },
+      },
+    );
+    return true;
   }
 }
