@@ -17,4 +17,7 @@ export interface ProgettoDao {
   getUserStory(id, userStoryId): Promise<UserStory>;
   insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean>;
   deleteUserStory(id, userStoryId): Promise<boolean>;
+  getUserStoryByUser(
+    userId,
+  ): Promise<{ projectId: string; userStories: UserStory[] }[]>;
 }
