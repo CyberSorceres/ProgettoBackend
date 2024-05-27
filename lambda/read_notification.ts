@@ -8,18 +8,15 @@ export const readNotifications = async (
   userId: string,
   notification_id: string,
 ) => {
-
-  const notificationUser= await notificationDao.getNotificationsByUser(userId);
-  const verifica =notificationUser.some((n)=>n._id==notification_id);
-  if (verifica){
-   await notificationDao.setRead(notification_id);
+  const notificationUser = await notificationDao.getNotificationsByUser(userId);
+  const verifica = notificationUser.some((n) => n._id == notification_id);
+  if (verifica) {
+    await notificationDao.setRead(notification_id);
   }
 
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      (verifica),
-    ),
+    body: JSON.stringify(verifica),
   };
 };
 
