@@ -18,6 +18,7 @@ export class NotificationMongoose implements NotificationDao {
         _id: String,
         userId: String,
         message: String,
+        read: Boolean,
       }),
     );
   }
@@ -31,5 +32,8 @@ export class NotificationMongoose implements NotificationDao {
   }
   async getNotificationsByUser(userId: string): Promise<Notification[]> {
     return this.NotificationModel.find({ userId }).exec();
+  }
+  async setRead(id:string):Promise<void>{
+    await this.NotificationModel.findOneAndUpdate({_id:id}, {read:true}) ;
   }
 }
