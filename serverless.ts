@@ -1,4 +1,5 @@
 import type { AWS } from "@serverless/typescript";
+import { readNotifications } from "./lambda/read_notification";
 
 const serverlessConfiguration: AWS = {
   service: "todo-list",
@@ -297,6 +298,29 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/set_unit_test",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    readNotifications: {
+      handler: "lambda/read_notification.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/read_notification",
             cors: {
               allowCredentials: true,
               origin: "http://localhost:5173",
