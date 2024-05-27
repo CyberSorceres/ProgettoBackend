@@ -314,7 +314,7 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
-    setUnitTest: {
+    setUserStoryState: {
       handler: "lambda/set_user_story_state.handler",
       events: [
         {
