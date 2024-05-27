@@ -12,6 +12,7 @@ export class UserStory {
   private unitTest?: string;
   private id: string;
   private feedbacks: Feedback[];
+  private passing: boolean;
 
   get Description(): string {
     return this.description;
@@ -45,6 +46,12 @@ export class UserStory {
   }
   set Id(value: string) {
     this.id = value;
+  }
+  get Passing(): boolean {
+    return this.passing;
+  }
+  set Passing(value: boolean) {
+    this.passing = value;
   }
 
   get Feedbacks() {
