@@ -11,12 +11,10 @@ export class InviteMongoose implements InviteDao {
   constructor(mongoose: Mongoose) {
     this.mongoose = mongoose;
     this.InviteModel = this.mongoose.connection.model<Invite & { _id: string }>(
-      "Model",
+      "Invite",
       new Schema({
-        _id: String,
         id: {
           type: String,
-          alias: "_id",
         },
         projectId: String,
         role: Number,
@@ -28,10 +26,10 @@ export class InviteMongoose implements InviteDao {
     return true;
   }
   async removeInvite(invite: Invite): Promise<boolean> {
-    this.InviteModel.findOneAndDelete({ _id: invite.id });
+    this.InviteModel.findOneAndDelete({ id: invite.id });
     return true;
   }
   async getInvite(id: string): Promise<Invite> {
-    return this.InviteModel.findById({ _id: id });
+    return this.InviteModel.findOne({ id: id });
   }
 }

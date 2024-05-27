@@ -385,6 +385,7 @@ const serverlessConfiguration: AWS = {
     },
     bedrock: {
       handler: "lambda/bedrock.handler",
+      timeout: 30,
       events: [
         {
           http: {

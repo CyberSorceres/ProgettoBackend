@@ -1,7 +1,7 @@
 import { ProgettoDao } from "./progetto_dao";
 import { Progetto } from "../progetto";
 import { Mongoose } from "../../database/mongoose";
-import { Schema } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { Model } from "mongoose";
 import { EpicStory } from "../epic_story";
 import { UserStory, Feedback } from "../user_story";
@@ -98,15 +98,16 @@ export class ProgettoMongoose implements ProgettoDao {
   }
 
   async insertEpicStory(id, epicStory: EpicStory): Promise<boolean> {
-    await this.ProgettoModel.findOneAndUpdate(
+    const epicStoryId: any = new Types.ObjectId();
+    const res = await this.ProgettoModel.findOneAndUpdate(
       { _id: id },
       {
         $push: {
-          epicStories: epicStory,
+          epicStories: { ...epicStory, _id: epicStoryId },
         },
       },
     );
-    return true;
+    return epicStoryId;
   }
   async insertUserStory(
     id: string,
@@ -116,7 +117,7 @@ export class ProgettoMongoose implements ProgettoDao {
     await this.ProgettoModel.findOneAndUpdate(
       {
         _id: id,
-        "epicStories._id": epicStoryId,
+        "epicStories._id": Types.ObjectId.createFromHexString(epicStoryId),
       },
       {
         $push: {
@@ -164,17 +165,27 @@ export class ProgettoMongoose implements ProgettoDao {
     return true;
   }
   async getEpicStory(id, epicStoryId): Promise<EpicStory> {
-    const query = await this.ProgettoModel.aggregate().project({
-      epicStories: {
-        $filter: {
-          input: "$epicStories",
-          as: "epicStory",
-          cond: {
-            $eq: ["$$epicStory._id", epicStoryId],
+    const query = await this.ProgettoModel.aggregate([
+      { $match: { _id: Types.ObjectId.createFromHexString(id) } },
+      {
+        $project: {
+          epicStories: {
+            $filter: {
+              input: "$epicStories",
+              as: "epicStory",
+              cond: {
+                $eq: [
+                  "$$epicStory._id",
+                  Types.ObjectId.createFromHexString(epicStoryId),
+                ],
+              },
+            },
           },
         },
       },
-    });
+    ]);
+
+    console.log(query, id, epicStoryId);
     if (!query.length || !query[0].epicStories.length) {
       return null;
     }
@@ -185,7 +196,7 @@ export class ProgettoMongoose implements ProgettoDao {
       return (
         await this.ProgettoModel.aggregate([
           {
-            $match: { _id: id },
+            $match: { _id: Types.ObjectId.createFromHexString(id) },
           },
           {
             $unwind: "$epicStories",
@@ -197,7 +208,10 @@ export class ProgettoMongoose implements ProgettoDao {
                   input: "$epicStories.userStories",
                   as: "epicStory",
                   cond: {
-                    $eq: ["$$epicStory._id", userStoryId],
+                    $eq: [
+                      "$$epicStory._id",
+                      Types.ObjectId.createFromHexString(userStoryId),
+                    ],
                   },
                 },
               },
@@ -224,7 +238,7 @@ export class ProgettoMongoose implements ProgettoDao {
         _id: id,
         epicStories: {
           $elemMatch: {
-            "userStories._id": userStoryId,
+            "userStories._id": Types.ObjectId.createFromHexString(userStoryId),
           },
         },
       },
@@ -245,7 +259,7 @@ export class ProgettoMongoose implements ProgettoDao {
       {
         $pull: {
           "epicStories.$[].userStories": {
-            _id: userStoryId,
+            _id: Types.ObjectId.createFromHexString(userStoryId),
           },
         },
       },
@@ -266,7 +280,10 @@ export class ProgettoMongoose implements ProgettoDao {
               input: "$epicStories.userStories",
               as: "userStories",
               cond: {
-                $eq: ["$$userStories.assigned", userId],
+                $eq: [
+                  "$$userStories.assigned",
+                  Types.ObjectId.createFromHexString(userId),
+                ],
               },
             },
           },

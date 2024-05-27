@@ -40,7 +40,7 @@ export const handler = async (req) => {
       id,
       new ProgettoMongoose(mongoose),
       new InviteMongoose(mongoose),
-      req.event.queryStringParameters.oinviteId,
+      JSON.parse(req.body).inviteId,
     ),
   );
 };
