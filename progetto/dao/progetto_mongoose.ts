@@ -18,6 +18,7 @@ export class ProgettoMongoose implements ProgettoDao {
       assigned: String,
       unitTest: String,
       feedback: [{ creatorId: String, description: String }],
+      passing: Boolean,
     });
     const epicStorySchema = new Schema({
       description: String,
@@ -304,6 +305,28 @@ export class ProgettoMongoose implements ProgettoDao {
       {
         $push: {
           users: userId,
+        },
+      },
+    );
+    return true;
+  }
+  async setUserStoryState(
+    id: string,
+    userStoryId: string,
+    passing: boolean,
+  ): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": Types.ObjectId.createFromHexString(userStoryId),
+          },
+        },
+      },
+      {
+        $set: {
+          "epicStories.$.userStories.$.passing": passing,
         },
       },
     );

@@ -314,6 +314,30 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    setUnitTest: {
+      handler: "lambda/set_user_story_state.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/set_user_story_state",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+
     readNotifications: {
       handler: "lambda/read_notification.handler",
       events: [

@@ -5,7 +5,7 @@ import { UserMockDao } from "../../user/dao/user_mock_dao";
 import { Role, User } from "../../user/user";
 import { Progetto } from "../../progetto/progetto";
 
-describe("Test get progetti", () => {
+describe("Test add epic story", () => {
   let progettoDao: ProgettoDaoMock;
   let userDao: UserMockDao;
   let user: User;
@@ -17,7 +17,7 @@ describe("Test get progetti", () => {
     await userDao.insertUser(user);
     await progettoDao.insertProgetto(new Progetto("test", false, []));
   });
-  it("returns every project", async () => {
+  it("adds an epic story", async () => {
     // It should fail when the user is not a PM
     expect(
       await addEpicStory(progettoDao, userDao, "2", {
@@ -36,7 +36,7 @@ describe("Test get progetti", () => {
       }),
     ).toStrictEqual({
       statusCode: 200,
-      body: JSON.stringify({ ok: true }),
+      body: JSON.stringify({ ok: true, id: true }),
     });
     expect((await progettoDao.findById("1")).EpicStories).toHaveLength(1);
   });

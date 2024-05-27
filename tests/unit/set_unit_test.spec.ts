@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { setUnitTest } from "../../lambda/set_unit_test";
+import { setPassing } from "../../lambda/set_user_story_state";
 import { assignDev } from "../../lambda/assign_dev";
 import { insertFeedback } from "../../lambda/insert_feedback";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
@@ -59,7 +60,6 @@ describe("Test set unit test", () => {
   });
   it("sets unit test", async () => {
     await userDao.addToProject("2", "1", Role.PM);
-    console.log(progettoDao);
     expect(
       await setUnitTest(progettoDao, userDao, "2", {
         projectId: "1",
@@ -71,7 +71,17 @@ describe("Test set unit test", () => {
       body: JSON.stringify({ ok: true }),
     });
     expect(userStory.UnitTest).toBe("function test(){}");
-
+    expect(
+      await setPassing(progettoDao, userDao, "2", {
+        projectId: "1",
+        userStoryId: "3",
+        passing: true,
+      }),
+    ).toStrictEqual({
+      statusCode: 200,
+      body: JSON.stringify({ ok: true }),
+    });
+    expect(userStory.Passing).toBe(true);
     expect(
       await assignDev(progettoDao, userDao, "2", {
         projectId: "1",
