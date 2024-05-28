@@ -27,6 +27,7 @@ const serverlessConfiguration: AWS = {
             Effect: "Allow",
             Action: [
               "bedrock:InvokeModel",
+              "ses:SendEmail",
               "cognito-idp:AdminInitiateAuth",
               "cognito-idp:AdminCreateUser",
               "cognito-idp:AdminSetUserPassword",
@@ -386,6 +387,29 @@ const serverlessConfiguration: AWS = {
     },
     getNotifications: {
       handler: "lambda/get_notifications.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/notifications",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    changePassword: {
+      handler: "lambda/change_password.handler",
       events: [
         {
           http: {
