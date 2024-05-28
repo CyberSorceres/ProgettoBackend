@@ -8,6 +8,8 @@ export class Progetto {
   private id: string;
   private ai: string;
   private users: string[];
+  private cliente: string;
+  private date: Date;
 
   get Name(): string {
     return this.name;
@@ -45,13 +47,27 @@ export class Progetto {
   get Users() {
     return this.users;
   }
+  get Cliente() {
+    return this.cliente;
+  }
+  set Cliente(value: string) {
+    this.cliente = value;
+  }
+  get Date() {
+    return this.date;
+  }
+  set Date(value: Date) {
+    this.date = value;
+  }
   constructor(
     name: string,
+    cliente: string,
     validated: boolean,
     epicStories: EpicStory[] = [],
     id: string = undefined,
     ai: string = "",
     users: string[] = [],
+    date: Date = new Date(),
   ) {
     this.name = name;
     this.validated = validated;
@@ -60,6 +76,8 @@ export class Progetto {
     this.ai = ai;
     this.users = users;
     this.tag = this.createTag(this.name);
+    this.date = date;
+    this.cliente = cliente;
   }
 
   private createTag(name: string): string {

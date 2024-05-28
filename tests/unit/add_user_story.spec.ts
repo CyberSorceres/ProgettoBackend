@@ -17,7 +17,7 @@ describe("Test get progetti", () => {
     userDao = new UserMockDao();
     user = new User("2");
     userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
     await progettoDao.insertEpicStory("1", new EpicStory("testdesc", []));
   });
   it("adds user story", async () => {

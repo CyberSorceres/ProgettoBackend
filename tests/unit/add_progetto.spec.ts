@@ -15,6 +15,7 @@ describe("Test get progetti", () => {
       await addProgetto(progettoDao, userDao, "2", {
         name: "test project",
         ai: "chatgpt",
+        cliente: "test",
       }),
     ).toStrictEqual({
       statusCode: 200,
@@ -25,5 +26,6 @@ describe("Test get progetti", () => {
     const project = await progettoDao.findById("1");
     expect(project.Name).toBe("test project");
     expect(project.Ai).toBe("chatgpt");
+    expect(project.Cliente).toBe("test");
   });
 });
