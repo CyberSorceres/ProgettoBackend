@@ -2,6 +2,8 @@ import type { EpicStory } from "./epic_story";
 
 export class Progetto {
   private name: string;
+  private start_date: string;
+  private business_requirements: string;
   private validated: boolean;
   private epicStories: EpicStory[];
   private id: string;
@@ -14,6 +16,22 @@ export class Progetto {
 
   set Name(value: string) {
     this.name = value;
+  }
+
+  get StartDate(): string {
+    return this.start_date;
+  }
+
+  set StartDate(value: string) {
+    this.start_date = value;
+  }
+
+  get BusinessRequirements(): string {
+    return this.business_requirements;
+  }
+
+  set BusinessRequirements(value: string) {
+    this.business_requirements = value;
   }
 
   get Validated(): boolean {
@@ -42,6 +60,7 @@ export class Progetto {
   constructor(
     name: string,
     validated: boolean,
+    business_requirement:string,
     epicStories: EpicStory[] = [],
     id: string,
     ai: string = "",
@@ -49,6 +68,8 @@ export class Progetto {
   ) {
     this.name = name;
     this.validated = validated;
+    this.business_requirements=business_requirement;
+    this.start_date= (new Date()).toString();
     this.epicStories = epicStories;
     this.id = id;
     this.ai = ai;
