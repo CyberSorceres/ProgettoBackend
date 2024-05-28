@@ -18,7 +18,7 @@ export class ProgettoMongoose implements ProgettoDao {
       assigned: String,
       unitTest: String,
       feedback: [{ creatorId: String, description: String }],
-      passing: Boolean,
+      passing: Number,
     });
     const epicStorySchema = new Schema({
       description: String,
@@ -185,9 +185,30 @@ export class ProgettoMongoose implements ProgettoDao {
           },
         },
       },
+      {
+        $addFields: {
+          epicStories: {
+            userStories: {
+              $filter: {
+                input: {
+                  $getField: {
+                    field: "userStories",
+                    input: {
+                      $first: "$epicStories",
+                    },
+                  },
+                },
+                as: "userStory",
+                cond: {
+                  $ne: ["$$userStory.passing", 2],
+                },
+              },
+            },
+          },
+        },
+      },
     ]);
 
-    console.log(query, id, epicStoryId);
     if (!query.length || !query[0].epicStories.length) {
       return null;
     }
@@ -314,7 +335,7 @@ export class ProgettoMongoose implements ProgettoDao {
   async setUserStoryState(
     id: string,
     userStoryId: string,
-    passing: boolean,
+    state: number,
   ): Promise<boolean> {
     await this.ProgettoModel.findOneAndUpdate(
       {
@@ -327,7 +348,7 @@ export class ProgettoMongoose implements ProgettoDao {
       },
       {
         $set: {
-          "epicStories.$.userStories.$.passing": passing,
+          "epicStories.$.userStories.$.passing": state,
         },
       },
     );
