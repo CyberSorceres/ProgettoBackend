@@ -73,6 +73,7 @@ export const invite = async (
       Permanent: false,
     }),
   );
+
   const sub = res.User.Attributes[2].Value;
   await userDao.insertUser(new User(sub, []));
   await userDao.addToProject(sub, body.projectId, body.role);

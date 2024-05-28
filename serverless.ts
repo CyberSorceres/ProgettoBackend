@@ -436,19 +436,11 @@ const serverlessConfiguration: AWS = {
       events: [
         {
           http: {
-            method: "GET",
-            path: "/notifications",
+            method: "POST",
+            path: "/change_password",
             cors: {
               allowCredentials: true,
               origin: "http://localhost:5173",
-            },
-            authorizer: {
-              name: "PrivateAuthorizer",
-              type: "COGNITO_USER_POOLS",
-              arn: {
-                "Fn::GetAtt": ["UserPool", "Arn"],
-              },
-              claims: ["email"],
             },
           },
         },

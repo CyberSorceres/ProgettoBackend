@@ -1,23 +1,26 @@
 import {
   CognitoIdentityProviderClient,
-  AdminCreateUserCommand,
-  AdminSetUserPasswordCommand,
+  AdminRespondToAuthChallengeCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import { useCors } from "./use_cors";
 
-const { USER_POOL_ID: userPoolId } = process.env;
+const { USER_POOL_ID: userPoolId, CLIENT_ID: clientId } = process.env;
 
 export const handler = async (req) => {
   try {
-    const email = req.requestContext.authorizer.claims.email;
-    const { password } = JSON.parse(req.body);
+    const { password, session, email } = JSON.parse(req.body);
     const cognito = new CognitoIdentityProviderClient();
+
     const response = await cognito.send(
-      new AdminSetUserPasswordCommand({
-        Password: password,
+      new AdminRespondToAuthChallengeCommand({
+        Session: session,
+        ChallengeResponses: {
+          NEW_PASSWORD: password,
+          USERNAME: email,
+        },
+        ChallengeName: "NEW_PASSWORD_REQUIRED",
+        ClientId: clientId,
         UserPoolId: userPoolId,
-        Username: email,
-        Permanent: true,
       }),
     );
 
