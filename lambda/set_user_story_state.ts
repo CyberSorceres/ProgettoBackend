@@ -9,11 +9,11 @@ import { useCors } from "./use_cors";
 interface SetPassingRequest {
   projectId: string;
   userStoryId: string;
-  passing: boolean;
+  state: number;
 }
 
 function validateBody(body: object): body is SetPassingRequest {
-  return "projectId" in body && "userStoryId" in body && "passing" in body;
+  return "projectId" in body && "userStoryId" in body && "state" in body;
 }
 
 export const setPassing = async (
@@ -39,7 +39,7 @@ export const setPassing = async (
   const success = await progettoDao.setUserStoryState(
     body.projectId,
     body.userStoryId,
-    body.passing,
+    body.state,
   );
   if (success) {
     return {

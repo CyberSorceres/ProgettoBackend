@@ -75,13 +75,13 @@ describe("Test set unit test", () => {
       await setPassing(progettoDao, userDao, "2", {
         projectId: "1",
         userStoryId: "3",
-        passing: true,
+        state: 1,
       }),
     ).toStrictEqual({
       statusCode: 200,
       body: JSON.stringify({ ok: true }),
     });
-    expect(userStory.Passing).toBe(true);
+    expect(userStory.Passing).toBe(1);
     expect(
       await assignDev(progettoDao, userDao, "2", {
         projectId: "1",

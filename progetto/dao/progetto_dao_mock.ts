@@ -106,7 +106,7 @@ export class ProgettoDaoMock implements ProgettoDao {
   async setUserStoryState(
     id: string,
     userStoryId: string,
-    passing: boolean,
+    passing: number,
   ): Promise<boolean> {
     (await this.getUserStory(id, userStoryId)).Passing = passing;
     return true;

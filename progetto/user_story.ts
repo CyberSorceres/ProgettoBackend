@@ -5,6 +5,12 @@ export interface Feedback {
   description: string;
 }
 
+export enum UserStoryStatus {
+  TODO,
+  PASSING,
+  DELETED,
+}
+
 export class UserStory {
   private tag: string;
   private description: string;
@@ -12,7 +18,7 @@ export class UserStory {
   private unitTest?: string;
   private id: string;
   private feedbacks: Feedback[];
-  private passing: boolean;
+  private passing: UserStoryStatus;
 
   get Description(): string {
     return this.description;
