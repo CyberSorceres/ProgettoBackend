@@ -21,9 +21,9 @@ describe("Test get progetti", () => {
   let user: User;
   beforeEach(async () => {
     progetti = [
-      new Progetto("Test", false, []),
-      new Progetto("Test2", true, []),
-      new Progetto("Test3", true, []),
+      new Progetto("Test", "testclient", false, []),
+      new Progetto("Test2", "testclient", true, []),
+      new Progetto("Test3", "testclient", true, []),
     ];
     progettoDao = new ProgettoDaoMock();
     for (const p of progetti) {

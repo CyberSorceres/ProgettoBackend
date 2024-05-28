@@ -28,6 +28,7 @@ export class ProgettoMongoose implements ProgettoDao {
       "Progetto",
       new Schema({
         name: String,
+        cliente: String,
         validated: Boolean,
         epicStories: [epicStorySchema],
         ai: String,
@@ -40,6 +41,7 @@ export class ProgettoMongoose implements ProgettoDao {
   private convertToClass(obj) {
     return new Progetto(
       obj.name,
+      obj.cliente,
       obj.validated,
       obj.epicStories.map(
         (epic) =>

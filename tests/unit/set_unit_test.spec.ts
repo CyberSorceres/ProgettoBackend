@@ -21,7 +21,7 @@ describe("Test set unit test", () => {
     userDao = new UserMockDao();
     user = new User("2");
     await userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
     await progettoDao.insertEpicStory("1", new EpicStory("descr"));
     userStory = new UserStory("tag", "desc");
     await progettoDao.insertUserStory("1", "2", userStory);

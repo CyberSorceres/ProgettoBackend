@@ -15,7 +15,7 @@ describe("Test add epic story", () => {
     userDao = new UserMockDao();
     user = new User("2");
     await userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
   });
   it("adds an epic story", async () => {
     // It should fail when the user is not a PM

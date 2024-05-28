@@ -22,6 +22,7 @@
     "mongoose": "^8.3.4",
     "prettier": "^3.2.5",
     "serverless": "^3.38.0",
+    "serverless-cognito-add-custom-attributes": "^0.3.1",
     "serverless-esbuild": "^1.52.1",
     "serverless-offline": "^13.5.0",
     "ts-node": "^10.9.2",

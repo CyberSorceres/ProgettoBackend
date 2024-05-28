@@ -19,7 +19,7 @@ describe("invite tests", () => {
     inviteDao = new InviteDaoMock();
     user = new User("2");
     await userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
   });
 
   it("fails is user is not PM", async () => {
