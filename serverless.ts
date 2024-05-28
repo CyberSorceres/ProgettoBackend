@@ -31,6 +31,7 @@ const serverlessConfiguration: AWS = {
               "cognito-idp:AdminInitiateAuth",
               "cognito-idp:AdminCreateUser",
               "cognito-idp:AdminSetUserPassword",
+              "cognito-idp:AdminRespondToAuthChallenge",
             ],
             Resource: "*",
           },
