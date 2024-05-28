@@ -26,4 +26,5 @@ export interface ProgettoDao {
     userStoryId: string,
     passing: boolean,
   ): Promise<boolean>;
+  getUserStoryByTag(tag: string): Promise<UserStory>;
 }

@@ -131,6 +131,29 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    getUserStoryByTag: {
+      handler: "lambda/get_user_story_by_tag.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/getUserStoryByTag",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     getAssignedUserStory: {
       handler: "lambda/get_assigned_user_story.handler",
       events: [

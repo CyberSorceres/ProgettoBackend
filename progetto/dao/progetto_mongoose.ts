@@ -32,6 +32,7 @@ export class ProgettoMongoose implements ProgettoDao {
         epicStories: [epicStorySchema],
         ai: String,
         users: [String],
+        tag: String,
       }).loadClass(Progetto),
     );
   }
@@ -331,5 +332,39 @@ export class ProgettoMongoose implements ProgettoDao {
       },
     );
     return true;
+  }
+  async getUserStoryByTag(tag: string): Promise<UserStory> {
+    const [projectTag, userStoryTag] = tag.split("-");
+    return (
+      await this.ProgettoModel.aggregate([
+        {
+          $match: { tag: projectTag },
+        },
+        {
+          $unwind: "$epicStories",
+        },
+        {
+          $project: {
+            "epicStories.userStories": {
+              $filter: {
+                input: "$epicStories.userStories",
+                as: "userStory",
+                cond: {
+                  $eq: ["$$userStory.tag", userStoryTag],
+                },
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            userStories: {
+              $first: "$epicStories.userStories",
+            },
+          },
+        },
+      ])
+    )[0].userStories[0];
   }
 }
