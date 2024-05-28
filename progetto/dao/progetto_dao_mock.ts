@@ -111,4 +111,15 @@ export class ProgettoDaoMock implements ProgettoDao {
     (await this.getUserStory(id, userStoryId)).Passing = passing;
     return true;
   }
+
+  async getUserStoryByTag(tag: string): Promise<UserStory> {
+    const [projectTag, userStoryTag] = tag.split("-");
+    for (const epic of this.progetti.find((p) => p.Tag === projectTag)
+      .EpicStories) {
+      for (const user of epic.UserStories) {
+        if (user.Tag === userStoryTag) return user;
+      }
+    }
+    return null;
+  }
 }

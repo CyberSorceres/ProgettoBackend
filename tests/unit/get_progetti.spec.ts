@@ -3,6 +3,7 @@ import { getProgetti } from "../../lambda/get_progetti";
 import { getProgetto } from "../../lambda/get_progetto";
 import { getAssignedUserStory } from "../../lambda/get_assigned_user_story";
 import { getUserStory } from "../../lambda/get_user_story";
+import { getUserStoryByTag } from "../../lambda/get_user_story_by_tag";
 import { getEpicStory } from "../../lambda/get_epic_story";
 import { ProgettoDaoMock } from "../../progetto/dao/progetto_dao_mock";
 import { Progetto } from "../../progetto/progetto";
@@ -36,12 +37,12 @@ describe("Test get progetti", () => {
     await progettoDao.insertUserStory(
       "1",
       "4",
-      new UserStory("tag", "userstory1"),
+      new UserStory("TAG", "userstory1"),
     );
     await progettoDao.insertUserStory(
       "1",
       "4",
-      new UserStory("tag", "userstory1"),
+      new UserStory("TAG2", "userstory1"),
     );
 
     userDao = new UserMockDao();
@@ -99,7 +100,22 @@ describe("Test get progetti", () => {
   it("returns user stories", async () => {
     expect(await getAssignedUserStory(progettoDao, "1")).toStrictEqual({
       statusCode: 200,
-      body: '[{"projectId":"1","userStories":[{"tag":"tag","description":"userstory1","id":"7","feedbacks":[]},{"tag":"tag","description":"userstory1","id":"8","feedbacks":[]}]}]',
+      body: '[{"projectId":"1","userStories":[{"tag":"TAG","description":"userstory1","id":"7","feedbacks":[]},{"tag":"TAG2","description":"userstory1","id":"8","feedbacks":[]}]}]',
+    });
+  });
+  it("returns user story by tag", async () => {
+    expect(
+      await getUserStoryByTag(progettoDao, userDao, "1", {
+        tag: "TST-TAG",
+      }),
+    ).toStrictEqual({
+      statusCode: 200,
+      body: JSON.stringify({
+        tag: "TAG",
+        description: "userstory1",
+        id: "7",
+        feedbacks: [],
+      }),
     });
   });
 });

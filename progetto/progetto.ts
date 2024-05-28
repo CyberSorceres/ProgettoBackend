@@ -2,6 +2,7 @@ import type { EpicStory } from "./epic_story";
 
 export class Progetto {
   private name: string;
+  private tag: string;
   private validated: boolean;
   private epicStories: EpicStory[];
   private id: string;
@@ -35,7 +36,12 @@ export class Progetto {
   set Ai(value: string) {
     this.ai = value;
   }
-
+  get Tag(): string {
+    return this.tag;
+  }
+  set Tag(value: string) {
+    this.tag = value;
+  }
   get Users() {
     return this.users;
   }
@@ -43,7 +49,7 @@ export class Progetto {
     name: string,
     validated: boolean,
     epicStories: EpicStory[] = [],
-    id: string,
+    id: string = undefined,
     ai: string = "",
     users: string[] = [],
   ) {
@@ -53,6 +59,14 @@ export class Progetto {
     this.id = id;
     this.ai = ai;
     this.users = users;
+    this.tag = this.createTag(this.name);
+  }
+
+  private createTag(name: string): string {
+    const res = name.replace(/[aeiou]/gi, "").slice(0, 5);
+    return (
+      res + name.replace(/[^aeiou]/gi, "").slice(0, res.length - 5)
+    ).toUpperCase();
   }
 
   addEpicStory(epicStory: EpicStory) {
