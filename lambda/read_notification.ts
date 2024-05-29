@@ -9,7 +9,11 @@ export const readNotifications = async (
   notification_id: string,
 ) => {
   const notificationUser = await notificationDao.getNotificationsByUser(userId);
-  const verifica = notificationUser.some((n) => n._id == notification_id);
+  console.log(notification_id);
+  console.log(notificationUser.map((n) => n._id.toString()));
+  const verifica = notificationUser.some(
+    (n) => n._id.toString() == notification_id,
+  );
   if (verifica) {
     await notificationDao.setRead(notification_id);
   }
@@ -24,6 +28,10 @@ export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return useCors(
-    await readNotifications(new NotificationMongoose(mongoose), id, req.body),
+    await readNotifications(
+      new NotificationMongoose(mongoose),
+      id,
+      JSON.parse(req.body).notification_id,
+    ),
   );
 };

@@ -9,11 +9,7 @@ export const getNotifications = async (
 ) => {
   return {
     statusCode: 200,
-    body: JSON.stringify(
-      (await notificationDao.getNotificationsByUser(userId)).map(
-        (n) => n.message,
-      ),
-    ),
+    body: JSON.stringify(await notificationDao.getNotificationsByUser(userId)),
   };
 };
 

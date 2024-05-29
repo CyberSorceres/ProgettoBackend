@@ -15,10 +15,11 @@ export class NotificationMongoose implements NotificationDao {
     >(
       "Model",
       new Schema({
-        _id: String,
+        title: String,
         userId: String,
         message: String,
         read: Boolean,
+        type: Number,
       }),
     );
   }

@@ -316,6 +316,29 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    businessRequirements: {
+      handler: "lambda/business_requirements.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/business_requirements",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     setUnitTest: {
       handler: "lambda/set_unit_test.handler",
       events: [
