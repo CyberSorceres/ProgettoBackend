@@ -86,7 +86,7 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
-          getProgettoByTag: {
+    getProgettoByTag: {
       handler: "lambda/get_progetto_by_tag.handler",
       events: [
         {

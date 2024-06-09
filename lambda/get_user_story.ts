@@ -28,7 +28,7 @@ export const getUserStory = async (
       body: "invalid body",
     };
   }
-  if (!user.getRole() {
+  if (!user.getProjectIds().some((id) => body.projectId === id)) {
     return {
       statusCode: 504,
       body: "Unauthorized",

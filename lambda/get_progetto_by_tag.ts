@@ -5,7 +5,7 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { useCors } from "./use_cors";
 
-export const getProgetto = async (
+export const getProgettoByTag = async (
   progettoDao: ProgettoDao,
   userDao: UserDao,
   userId: string,
@@ -16,9 +16,9 @@ export const getProgetto = async (
       statusCode: 400,
       body: "Invalid project id",
     };
-  const progetto = await progettoDao.findById(queryParams.projectId);
+  const progetto = await progettoDao.findByTag(queryParams.tag);
   const user = await userDao.findById(userId);
-  if (!user?.getProjectIds().some((id) => id === progetto.Id)) {
+  if (!user.getProjectIds().some((id) => body.projectId === id)) {
     return {
       statusCode: 504,
       body: "Unauthorized",

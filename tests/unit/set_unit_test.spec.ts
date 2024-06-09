@@ -19,8 +19,9 @@ describe("Test set unit test", () => {
   beforeEach(async () => {
     progettoDao = new ProgettoDaoMock();
     userDao = new UserMockDao();
-    user = new User("2");
+    user = new User("2", [], Role.PM);
     await userDao.insertUser(user);
+    await userDao.insertUser(new User("3", [], Role.USER));
     await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
     await progettoDao.insertEpicStory("1", new EpicStory("descr"));
     userStory = new UserStory("tag", "desc");
@@ -28,7 +29,7 @@ describe("Test set unit test", () => {
   });
   it("fails when user is not PM", async () => {
     expect(
-      await setUnitTest(progettoDao, userDao, "2", {
+      await setUnitTest(progettoDao, userDao, "3", {
         projectId: "1",
         userStoryId: "3",
         unitTest: "function test(){}",
@@ -38,7 +39,7 @@ describe("Test set unit test", () => {
       body: "Unauthorized",
     });
     expect(
-      await assignDev(progettoDao, userDao, "2", {
+      await assignDev(progettoDao, userDao, "3", {
         projectId: "1",
         userStoryId: "3",
         devId: "4",
@@ -48,7 +49,7 @@ describe("Test set unit test", () => {
       body: "Unauthorized",
     });
     expect(
-      await insertFeedback(progettoDao, userDao, "2", {
+      await insertFeedback(progettoDao, userDao, "3", {
         projectId: "1",
         userStoryId: "3",
         feedback: "Hello",
@@ -59,7 +60,7 @@ describe("Test set unit test", () => {
     });
   });
   it("sets unit test", async () => {
-    await userDao.addToProject("2", "1", Role.PM);
+    await userDao.addToProject("2", "1");
     expect(
       await setUnitTest(progettoDao, userDao, "2", {
         projectId: "1",

@@ -10,32 +10,32 @@ interface ProjectData {
 }
 
 export class User {
-    private id: string;
-    private role: Role;
+  private id: string;
+  private role: Role;
   /**
    * Mappa progettoId -> Ruolo
    */
   private projects: string[] = [];
 
-
   getRole() {
-      return this.role;
+    return this.role;
   }
 
   getProjectIds(): string[] {
-    return this.projects
+    return this.projects;
   }
 
   addToProject(projectId: string) {
-      this.projects.push(projectId);
+    this.projects.push(projectId);
   }
 
   get Id(): string {
     return this.id;
   }
 
-  constructor(id: string, projects: string[] = []) {
+  constructor(id: string, projects: string[] = [], role: Role = Role.USER) {
     this.id = id;
     this.projects = projects;
+    this.role = role;
   }
 }

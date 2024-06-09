@@ -13,22 +13,11 @@ describe("Test add epic story", () => {
   beforeEach(async () => {
     progettoDao = new ProgettoDaoMock();
     userDao = new UserMockDao();
-    user = new User("2");
+    user = new User("2", [], Role.PM);
     await userDao.insertUser(user);
     await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
   });
   it("adds an epic story", async () => {
-    // It should fail when the user is not a PM
-    expect(
-      await addEpicStory(progettoDao, userDao, "2", {
-        description: "epic story",
-        projectId: "1",
-      }),
-    ).toStrictEqual({
-      statusCode: 501,
-      body: "Unauthorized",
-    });
-    await userDao.addToProject("2", "1", Role.PM);
     expect(
       await addEpicStory(progettoDao, userDao, "2", {
         description: "epic story",

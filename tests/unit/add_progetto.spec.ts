@@ -22,7 +22,6 @@ describe("Test get progetti", () => {
       body: JSON.stringify({ ok: true, projectId: "1" }),
     });
     expect(user.getProjectIds()).toStrictEqual(["1"]);
-    expect(user.getProjectRole("1")).toBe(Role.PM);
     const project = await progettoDao.findById("1");
     expect(project.Name).toBe("test project");
     expect(project.Ai).toBe("chatgpt");

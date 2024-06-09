@@ -91,7 +91,7 @@ json
 Output desiderato:
 
 Genera un elenco di epic stories in formato JSON, seguendo il formato e gli esempi forniti. Assicurati che ogni epic story sia ben strutturata e includa tutte le informazioni necessarie per comprendere gli obiettivi e le funzionalità principali del progetto.`,
-    `Sei un intelligenza artificiale, specializzata nella generazione di codice di test utilizzando il Framework Vitest.
+  `Sei un intelligenza artificiale, specializzata nella generazione di codice di test utilizzando il Framework Vitest.
 
 Linee guida:
 Analizza il codice della user story, genera una suite di test con vari test che testino gli edge case e le principali funzionalità
@@ -165,5 +165,5 @@ describe('Cart', () => {
   });
 });
 "
-}`
+}`,
 ];
