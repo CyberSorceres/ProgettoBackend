@@ -32,6 +32,9 @@ export const register = async (event, userDao: UserDao) => {
       new User(jwtDecode(response.AuthenticationResult.IdToken).sub),
     );
   }
+  const user = await userDao.findById(
+    jwtDecode(response.AuthenticationResult.IdToken).sub,
+  );
 
   return {
     statusCode: 200,
@@ -39,7 +42,7 @@ export const register = async (event, userDao: UserDao) => {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
     },
-    body: JSON.stringify(response),
+    body: JSON.stringify({ ...response, role: user.getRole() }),
   };
 };
 
