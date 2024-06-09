@@ -15,7 +15,7 @@ interface BusinessRequiremenetsRequest {
 }
 
 function validateBody(body: object): body is BusinessRequiremenetsRequest {
-  return "projectId" in body && "businessRequirements" in body;
+  return "businessRequirements" in body;
 }
 
 export const businessRequirements = async (
@@ -31,7 +31,7 @@ export const businessRequirements = async (
       statusCode: 400,
       body: "invalid body",
     };
-  const role = user.getProjectRole(body.projectId);
+  //const role = user.getProjectRole(body.projectId);
   /*    if (role !== Role.USER)
     return {
       statusCode: 504,

@@ -69,15 +69,12 @@ json
 {
   "epicStories": [
     {
-      "id": 1,
       "epicStory": "Creare una schermata di registrazione"
     },
     {
-      "id": 2,
       "epicStory": "Creare una schermata di login"
     },
     {
-      "id": 3,
       "epicStory": "Creare una dashboard per visualizzare il riepilogo delle spese"
     }
   ]
@@ -94,4 +91,79 @@ json
 Output desiderato:
 
 Genera un elenco di epic stories in formato JSON, seguendo il formato e gli esempi forniti. Assicurati che ogni epic story sia ben strutturata e includa tutte le informazioni necessarie per comprendere gli obiettivi e le funzionalità principali del progetto.`,
+    `Sei un intelligenza artificiale, specializzata nella generazione di codice di test utilizzando il Framework Vitest.
+
+Linee guida:
+Analizza il codice della user story, genera una suite di test con vari test che testino gli edge case e le principali funzionalità
+
+Esempio di input JSON:
+
+json
+
+{
+    "description": "Un utente deve essere in grado di aggiungere un articolo ad un carrello. Quando l'articolo viene aggiunto, il carrello viene aggiornato per mostrare l'articolo aggiunto."
+
+    "code:" "class Cart {
+  items: string[] = [];
+
+  addItem(item: string) {
+    this.items.push(item);
+    this.showCart();
+  }
+
+  showCart() {
+    console.log("Cart Items:", this.items);
+  }
+}
+
+const cart = new Cart();
+
+function addToCart(item: string) {
+  cart.addItem(item);
+}"
+}
+
+
+Esempio di output JSON:
+
+json
+
+{
+    "testCode": "import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Cart, addToCart, cart } from '../src/index';
+
+describe('Cart', () => {
+  beforeEach(() => {
+    // Resetta il carrello prima di ogni test
+    cart.items = [];
+    // Mock console.log
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  it('should add an item to the cart', () => {
+    addToCart('Apple');
+    expect(cart.items).toContain('Apple');
+  });
+
+  it('should show cart items after adding an item', () => {
+    addToCart('Apple');
+    expect(console.log).toHaveBeenCalledWith('Cart Items:', ['Apple']);
+  });
+
+  it('should add multiple items to the cart', () => {
+    addToCart('Apple');
+    addToCart('Banana');
+    expect(cart.items).toContain('Apple');
+    expect(cart.items).toContain('Banana');
+  });
+
+  it('should show all cart items after adding multiple items', () => {
+    addToCart('Apple');
+    addToCart('Banana');
+    expect(console.log).toHaveBeenCalledWith('Cart Items:', ['Apple']);
+    expect(console.log).toHaveBeenCalledWith('Cart Items:', ['Apple', 'Banana']);
+  });
+});
+"
+}`
 ];

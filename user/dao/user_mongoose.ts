@@ -13,11 +13,7 @@ export class UserMongoose implements UserDao {
       "User",
       new Schema({
         id: String,
-        projects: [
-          {
-            id: String,
-            role: Number,
-          },
+        projects: [ String
         ],
       }).loadClass(User),
     );
@@ -52,10 +48,7 @@ export class UserMongoose implements UserDao {
       { id: userId },
       {
         $push: {
-          projects: {
-            id: projectId,
-            role,
-          },
+            projectId,
         },
       },
     );

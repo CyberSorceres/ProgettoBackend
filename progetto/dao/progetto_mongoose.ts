@@ -74,7 +74,9 @@ export class ProgettoMongoose implements ProgettoDao {
   async findById(id: any): Promise<Progetto> {
     return this.convertToClass(await this.ProgettoModel.findById(id));
   }
-
+    async findByTag(tag: string): Promise<Progetto> {
+	return this.convertToClass(await this.ProgettoModel.findOne({tag}));
+  }
   async insertProgetto(progetto: Progetto): Promise<string> {
     try {
       const ret = await new this.ProgettoModel(progetto).save();
