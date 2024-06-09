@@ -28,7 +28,7 @@ export const getEpicStory = async (
       body: "invalid body",
     };
   }
-  if (!user.getProjectRole(body.projectId)) {
+  if (!user.getRole() {
     return {
       statusCode: 504,
       body: "Unauthorized",

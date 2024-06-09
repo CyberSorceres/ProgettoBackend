@@ -36,7 +36,7 @@ export const addUserStory = async (
       statusCode: 400,
       body: "invalid body",
     };
-  const role = user.getProjectRole(body.projectId);
+  const role = user.getRole();
   if (role !== Role.PM && role !== Role.DEV) {
     return {
       statusCode: 501,

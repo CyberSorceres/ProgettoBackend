@@ -18,7 +18,7 @@ export const getProgetto = async (
     };
   const progetto = await progettoDao.findById(queryParams.projectId);
   const user = await userDao.findById(userId);
-  if (!user?.getProjectRole(progetto.Id)) {
+  if (!user?.getRole() {
     return {
       statusCode: 504,
       body: "Unauthorized",
