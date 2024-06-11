@@ -5,6 +5,7 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { Role, User } from "../user/user";
 import { EpicStory } from "../progetto/epic_story";
+import { useCors } from "./use_cors";
 
 interface AddEpicStoryRequest {
   description: string;
@@ -28,7 +29,7 @@ export const addEpicStory = async (
       statusCode: 400,
       body: "invalid body",
     };
-  const role = user.getProjectRole(body.projectId);
+  const role = user.getRole();
   if (role !== Role.PM) {
     return {
       statusCode: 501,
@@ -48,17 +49,19 @@ export const addEpicStory = async (
   }
   return {
     statusCode: 200,
-    body: JSON.stringify({ ok: true }),
+    body: JSON.stringify({ ok: true, id: res }),
   };
 };
 
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
-  return addEpicStory(
-    new ProgettoMongoose(mongoose),
-    new UserMongoose(mongoose),
-    id,
-    JSON.parse(req.body),
+  return useCors(
+    await addEpicStory(
+      new ProgettoMongoose(mongoose),
+      new UserMongoose(mongoose),
+      id,
+      JSON.parse(req.body),
+    ),
   );
 };

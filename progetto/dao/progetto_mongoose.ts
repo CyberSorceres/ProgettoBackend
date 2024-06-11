@@ -1,10 +1,10 @@
 import { ProgettoDao } from "./progetto_dao";
 import { Progetto } from "../progetto";
 import { Mongoose } from "../../database/mongoose";
-import { Schema } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { Model } from "mongoose";
 import { EpicStory } from "../epic_story";
-import { UserStory } from "../user_story";
+import { UserStory, Feedback } from "../user_story";
 
 export class ProgettoMongoose implements ProgettoDao {
   private mongoose: Mongoose;
@@ -17,6 +17,8 @@ export class ProgettoMongoose implements ProgettoDao {
       description: String,
       assigned: String,
       unitTest: String,
+      feedback: [{ creatorId: String, description: String }],
+      passing: Number,
     });
     const epicStorySchema = new Schema({
       description: String,
@@ -26,8 +28,12 @@ export class ProgettoMongoose implements ProgettoDao {
       "Progetto",
       new Schema({
         name: String,
+        cliente: String,
         validated: Boolean,
         epicStories: [epicStorySchema],
+        ai: String,
+        users: [String],
+        tag: String,
       }).loadClass(Progetto),
     );
   }
@@ -35,6 +41,7 @@ export class ProgettoMongoose implements ProgettoDao {
   private convertToClass(obj) {
     return new Progetto(
       obj.name,
+      obj.cliente,
       obj.validated,
       obj.epicStories.map(
         (epic) =>
@@ -53,6 +60,9 @@ export class ProgettoMongoose implements ProgettoDao {
             epic._id,
           ),
       ),
+      obj._id,
+      obj.ai,
+      obj.users,
     );
   }
 
@@ -64,7 +74,9 @@ export class ProgettoMongoose implements ProgettoDao {
   async findById(id: any): Promise<Progetto> {
     return this.convertToClass(await this.ProgettoModel.findById(id));
   }
-
+  async findByTag(tag: string): Promise<Progetto> {
+    return this.convertToClass(await this.ProgettoModel.findOne({ tag }));
+  }
   async insertProgetto(progetto: Progetto): Promise<string> {
     try {
       const ret = await new this.ProgettoModel(progetto).save();
@@ -92,15 +104,16 @@ export class ProgettoMongoose implements ProgettoDao {
   }
 
   async insertEpicStory(id, epicStory: EpicStory): Promise<boolean> {
-    await this.ProgettoModel.findOneAndUpdate(
+    const epicStoryId: any = new Types.ObjectId();
+    const res = await this.ProgettoModel.findOneAndUpdate(
       { _id: id },
       {
         $push: {
-          epicStories: epicStory,
+          epicStories: { ...epicStory, _id: epicStoryId },
         },
       },
     );
-    return true;
+    return epicStoryId;
   }
   async insertUserStory(
     id: string,
@@ -110,7 +123,7 @@ export class ProgettoMongoose implements ProgettoDao {
     await this.ProgettoModel.findOneAndUpdate(
       {
         _id: id,
-        "epicStories._id": epicStoryId,
+        "epicStories._id": Types.ObjectId.createFromHexString(epicStoryId),
       },
       {
         $push: {
@@ -158,17 +171,48 @@ export class ProgettoMongoose implements ProgettoDao {
     return true;
   }
   async getEpicStory(id, epicStoryId): Promise<EpicStory> {
-    const query = await this.ProgettoModel.aggregate().project({
-      epicStories: {
-        $filter: {
-          input: "$epicStories",
-          as: "epicStory",
-          cond: {
-            $eq: ["$$epicStory._id", epicStoryId],
+    const query = await this.ProgettoModel.aggregate([
+      { $match: { _id: Types.ObjectId.createFromHexString(id) } },
+      {
+        $project: {
+          epicStories: {
+            $filter: {
+              input: "$epicStories",
+              as: "epicStory",
+              cond: {
+                $eq: [
+                  "$$epicStory._id",
+                  Types.ObjectId.createFromHexString(epicStoryId),
+                ],
+              },
+            },
           },
         },
       },
-    });
+      {
+        $addFields: {
+          epicStories: {
+            userStories: {
+              $filter: {
+                input: {
+                  $getField: {
+                    field: "userStories",
+                    input: {
+                      $first: "$epicStories",
+                    },
+                  },
+                },
+                as: "userStory",
+                cond: {
+                  $ne: ["$$userStory.passing", 2],
+                },
+              },
+            },
+          },
+        },
+      },
+    ]);
+
     if (!query.length || !query[0].epicStories.length) {
       return null;
     }
@@ -179,7 +223,7 @@ export class ProgettoMongoose implements ProgettoDao {
       return (
         await this.ProgettoModel.aggregate([
           {
-            $match: { _id: id },
+            $match: { _id: Types.ObjectId.createFromHexString(id) },
           },
           {
             $unwind: "$epicStories",
@@ -191,7 +235,10 @@ export class ProgettoMongoose implements ProgettoDao {
                   input: "$epicStories.userStories",
                   as: "epicStory",
                   cond: {
-                    $eq: ["$$epicStory._id", userStoryId],
+                    $eq: [
+                      "$$epicStory._id",
+                      Types.ObjectId.createFromHexString(userStoryId),
+                    ],
                   },
                 },
               },
@@ -210,5 +257,139 @@ export class ProgettoMongoose implements ProgettoDao {
     } catch (e) {
       return null;
     }
+  }
+
+  async insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": Types.ObjectId.createFromHexString(userStoryId),
+          },
+        },
+      },
+      {
+        $push: {
+          "epicStories.$.userStories.$.feedbacks": feedback,
+        },
+      },
+    );
+    return true;
+  }
+
+  async deleteUserStory(id, userStoryId): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        $pull: {
+          "epicStories.$[].userStories": {
+            _id: Types.ObjectId.createFromHexString(userStoryId),
+          },
+        },
+      },
+    );
+    return true;
+  }
+  async getUserStoryByUser(
+    userId,
+  ): Promise<{ projectId: string; userStories: UserStory[] }[]> {
+    return await this.ProgettoModel.aggregate([
+      {
+        $unwind: "$epicStories",
+      },
+      {
+        $project: {
+          "epicStories.userStories": {
+            $filter: {
+              input: "$epicStories.userStories",
+              as: "userStories",
+              cond: {
+                $eq: [
+                  "$$userStories.assigned",
+                  Types.ObjectId.createFromHexString(userId),
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          projectId: "$_id",
+          userStories: "$epicStories.userStories",
+        },
+      },
+    ]);
+  }
+  async addToProject(id, userId): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          users: userId,
+        },
+      },
+    );
+    return true;
+  }
+  async setUserStoryState(
+    id: string,
+    userStoryId: string,
+    state: number,
+  ): Promise<boolean> {
+    await this.ProgettoModel.findOneAndUpdate(
+      {
+        _id: id,
+        epicStories: {
+          $elemMatch: {
+            "userStories._id": Types.ObjectId.createFromHexString(userStoryId),
+          },
+        },
+      },
+      {
+        $set: {
+          "epicStories.$.userStories.$.passing": state,
+        },
+      },
+    );
+    return true;
+  }
+  async getUserStoryByTag(tag: string): Promise<UserStory> {
+    const [projectTag, userStoryTag] = tag.split("-");
+    return (
+      await this.ProgettoModel.aggregate([
+        {
+          $match: { tag: projectTag },
+        },
+        {
+          $unwind: "$epicStories",
+        },
+        {
+          $project: {
+            "epicStories.userStories": {
+              $filter: {
+                input: "$epicStories.userStories",
+                as: "userStory",
+                cond: {
+                  $eq: ["$$userStory.tag", userStoryTag],
+                },
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            userStories: {
+              $first: "$epicStories.userStories",
+            },
+          },
+        },
+      ])
+    )[0].userStories[0];
   }
 }

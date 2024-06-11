@@ -17,8 +17,8 @@ export class UserMockDao implements UserDao {
   deleteUser(user: User): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  async addToProject(id, projectId, role: Role): Promise<boolean> {
-    (await this.findById(id)).addToProject(projectId, role);
+  async addToProject(id, projectId): Promise<boolean> {
+    (await this.findById(id)).addToProject(projectId);
     return true;
   }
 }

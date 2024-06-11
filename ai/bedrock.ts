@@ -2,27 +2,38 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import { prompts } from "../prompts";
 
 export class Bedrock implements AI {
   async prompt(desc: string): Promise<string> {
     const client = new BedrockRuntimeClient({
-      region: "eu-central-1",
+      region: "us-east-1",
     });
+    const promptId = event.queryStringParameters.promptId || 0;
+
+    const prompt = `${prompts[promptId]}
+Il prompt è: ${event.queryStringParameters.message}`;
 
     const req = {
-      inputText: desc,
-      textGenerationConfig: {
-        maxTokenCount: 1024,
-        stopSequences: [],
-        temperature: 0,
-        topP: 1,
-      },
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: 100000,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: prompt,
+            },
+          ],
+        },
+      ],
     };
     const input = {
-      body: JSON.stringify(req),
+      modelId: "anthropic.claude-3-sonnet-20240229-v1:0",
       contentType: "application/json",
       accept: "application/json",
-      modelId: "amazon.titan-text-express-v1",
+      body: JSON.stringify(req),
     };
 
     const command = new InvokeModelCommand(input);

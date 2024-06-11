@@ -9,6 +9,7 @@ export class NotificationDaoMock implements NotificationDao {
     this.notifications.push({
       ...notification,
       id: (++this.counter).toString(),
+      read: false,
     });
     return true;
   }
@@ -18,5 +19,11 @@ export class NotificationDaoMock implements NotificationDao {
   }
   async getNotificationsByUser(userId: string): Promise<Notification[]> {
     return this.notifications.filter((n) => n.userId === userId);
+  }
+  async setRead(id: string): Promise<void> {
+    const notification = this.notifications.find((i) => i.id === id);
+    if (notification) {
+      notification.read = true;
+    }
   }
 }

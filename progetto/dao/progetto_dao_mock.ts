@@ -1,6 +1,6 @@
 import { EpicStory } from "../epic_story";
 import { Progetto } from "../progetto";
-import { UserStory } from "../user_story";
+import { UserStory, Feedback } from "../user_story";
 import { ProgettoDao } from "./progetto_dao";
 
 export class ProgettoDaoMock implements ProgettoDao {
@@ -46,15 +46,6 @@ export class ProgettoDaoMock implements ProgettoDao {
     return true;
   }
 
-  private async getUserStory(id, userStoryId): Promise<UserStory> {
-    const progetto = await this.findById(id);
-    for (const epicStory of progetto.EpicStories) {
-      for (const userStory of epicStory.UserStories) {
-        if (userStory.Id === userStoryId) return userStory;
-      }
-    }
-  }
-
   async assignDev(id, userStoryId, userId): Promise<boolean> {
     const userStory = await this.getUserStory(id, userStoryId);
     if (!userStory) return false;
@@ -76,5 +67,59 @@ export class ProgettoDaoMock implements ProgettoDao {
     return project.EpicStories.map((e) =>
       e.UserStories.find((u) => u.Id === userStoryId),
     ).find((u) => u);
+  }
+  async insertFeedback(id, userStoryId, feedback: Feedback): Promise<boolean> {
+    const userStory = await this.getUserStory(id, userStoryId);
+    if (!userStory) return false;
+    userStory.Feedbacks.push(feedback);
+    return true;
+  }
+  async deleteUserStory(id, userStoryId): Promise<boolean> {
+    const project = await this.findById(id);
+    const epic = project.EpicStories.find((e) =>
+      e.UserStories.find((u) => u.Id === userStoryId),
+    );
+    epic.UserStories = epic.UserStories.filter((u) => u.Id !== userStoryId);
+    return true;
+  }
+  async getUserStoryByUser(
+    userId,
+  ): Promise<{ projectId: string; userStories: UserStory[] }[]> {
+    const res: Array<{ projectId: string; userStories: UserStory[] }> = [];
+    for (const progetto of this.progetti) {
+      const element = { projectId: progetto.Id, userStories: [] };
+      for (const epicStory of progetto.EpicStories) {
+        for (const userStory of epicStory.UserStories) {
+          element.userStories.push(userStory);
+        }
+      }
+      if (element.userStories.length) {
+        res.push(element);
+      }
+    }
+    return res;
+  }
+  async addToProject(id, userId): Promise<boolean> {
+    (await this.findById(id)).Users.push(userId);
+    return true;
+  }
+  async setUserStoryState(
+    id: string,
+    userStoryId: string,
+    passing: number,
+  ): Promise<boolean> {
+    (await this.getUserStory(id, userStoryId)).Passing = passing;
+    return true;
+  }
+
+  async getUserStoryByTag(tag: string): Promise<UserStory> {
+    const [projectTag, userStoryTag] = tag.split("-");
+    for (const epic of this.progetti.find((p) => p.Tag === projectTag)
+      .EpicStories) {
+      for (const user of epic.UserStories) {
+        if (user.Tag === userStoryTag) return user;
+      }
+    }
+    return null;
   }
 }

@@ -3,53 +3,65 @@ import { UserDao } from "../user/dao/user_dao";
 import { ProgettoMongoose } from "../progetto/dao/progetto_mongoose";
 import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
-import { Progetto } from "../progetto/progetto";
-import { Role, User } from "../user/user";
+import { Role } from "../user/user";
 import { useCors } from "./use_cors";
 
-interface AddProgettoRequest {
-  name: string;
-  ai: string;
-  cliente: string;
+interface InsertFeedbackRequest {
+  projectId: string;
+  userStoryId: string;
+  feedback: string;
 }
 
-function validateBody(body: object): body is AddProgettoRequest {
-  return "name" in body && "ai" in body && "cliente" in body;
+function validateBody(body: object): body is InsertFeedbackRequest {
+  return "projectId" in body && "userStoryId" in body && "feedback" in body;
 }
 
-export const addProgetto = async (
+export const insertFeedback = async (
   progettoDao: ProgettoDao,
   userDao: UserDao,
   userId: string,
   body: object,
 ) => {
   const user = await userDao.findById(userId);
-  if (!user) {
-    await userDao.insertUser(new User(userId));
-  }
   const isValid = validateBody(body);
   if (!isValid)
     return {
       statusCode: 400,
       body: "invalid body",
     };
+  const role = user.getRole();
+  if (role !== Role.PM)
+    return {
+      statusCode: 504,
+      body: "Unauthorized",
+    };
 
-  const id = await progettoDao.insertProgetto(
-    new Progetto(body.name, body.cliente, false, [], undefined, body.ai),
+  const success = await progettoDao.insertFeedback(
+    body.projectId,
+    body.userStoryId,
+    {
+      creatorId: userId,
+      description: body.feedback,
+    },
   );
-  await userDao.addToProject(userId, id, Role.PM);
-  await progettoDao.addToProject(id, userId);
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ ok: true, projectId: id }),
-  };
+  if (success) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ ok: true }),
+    };
+  } else {
+    return {
+      statusCode: 400,
+      body: "Invalid request",
+    };
+  }
 };
 
 export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return useCors(
-    await addProgetto(
+    await insertFeedback(
       new ProgettoMongoose(mongoose),
       new UserMongoose(mongoose),
       id,

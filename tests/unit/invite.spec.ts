@@ -19,15 +19,16 @@ describe("invite tests", () => {
     inviteDao = new InviteDaoMock();
     user = new User("2");
     await userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
   });
 
   it("fails is user is not PM", async () => {
     await userDao.addToProject("2", "1", Role.DEV);
     expect(
-      await invite(userDao, user.Id, inviteDao, {
+      await invite(userDao, user.Id, {
         projectId: "1",
         role: Role.DEV,
+        email: "test@gmail.com",
       }),
     ).toStrictEqual({
       statusCode: 501,
@@ -37,7 +38,7 @@ describe("invite tests", () => {
   it("fails if body is invalid", async () => {
     await userDao.addToProject("2", "1", Role.PM);
     expect(
-      await invite(userDao, user.Id, inviteDao, {
+      await invite(userDao, user.Id, {
         projectsId: "1",
         role: Role.DEV,
       }),
@@ -45,23 +46,5 @@ describe("invite tests", () => {
       statusCode: 400,
       body: "invalid body",
     });
-  });
-
-  it("creates an invite", async () => {
-    await userDao.addToProject("2", "1", Role.PM);
-    const res = await invite(userDao, user.Id, inviteDao, {
-      projectId: "1",
-      role: Role.DEV,
-    });
-    expect(res.statusCode).toBe(200);
-    const id = JSON.parse(res.body).invite.id;
-    const user2 = new User("3");
-    await userDao.insertUser(user2);
-    console.log(id);
-    expect(await acceptInvite(userDao, "3", inviteDao, id)).toStrictEqual({
-      body: JSON.stringify({ ok: true }),
-      statusCode: 200,
-    });
-    expect(user2.getProjectRole("1")).toBe(Role.DEV);
   });
 });

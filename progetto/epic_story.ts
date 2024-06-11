@@ -20,6 +20,10 @@ export class EpicStory {
     return this.userStories;
   }
 
+  set UserStories(value: UserStory[]) {
+    this.userStories = value;
+  }
+
   get Id() {
     return this._id;
   }
@@ -27,7 +31,7 @@ export class EpicStory {
   constructor(
     description: string,
     userStories: UserStory[] = [],
-    _id: string = "",
+    _id: string = undefined,
   ) {
     this.description = description;
     this.userStories = userStories;

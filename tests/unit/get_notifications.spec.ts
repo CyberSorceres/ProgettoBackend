@@ -26,7 +26,20 @@ describe("notification tests", () => {
     });
     expect(await getNotifications(notificationDao, "1")).toStrictEqual({
       statusCode: 200,
-      body: JSON.stringify(["hi", "hello"]),
+      body: JSON.stringify([
+        {
+          userId: "1",
+          message: "hi",
+          id: "1",
+          read: false,
+        },
+        {
+          userId: "1",
+          message: "hello",
+          id: "3",
+          read: false,
+        },
+      ]),
     });
   });
 });

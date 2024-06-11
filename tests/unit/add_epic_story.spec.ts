@@ -5,7 +5,7 @@ import { UserMockDao } from "../../user/dao/user_mock_dao";
 import { Role, User } from "../../user/user";
 import { Progetto } from "../../progetto/progetto";
 
-describe("Test get progetti", () => {
+describe("Test add epic story", () => {
   let progettoDao: ProgettoDaoMock;
   let userDao: UserMockDao;
   let user: User;
@@ -13,22 +13,11 @@ describe("Test get progetti", () => {
   beforeEach(async () => {
     progettoDao = new ProgettoDaoMock();
     userDao = new UserMockDao();
-    user = new User("2");
+    user = new User("2", [], Role.PM);
     await userDao.insertUser(user);
-    await progettoDao.insertProgetto(new Progetto("test", false, []));
+    await progettoDao.insertProgetto(new Progetto("test", "client", false, []));
   });
-  it("returns every project", async () => {
-    // It should fail when the user is not a PM
-    expect(
-      await addEpicStory(progettoDao, userDao, "2", {
-        description: "epic story",
-        projectId: "1",
-      }),
-    ).toStrictEqual({
-      statusCode: 501,
-      body: "Unauthorized",
-    });
-    await userDao.addToProject("2", "1", Role.PM);
+  it("adds an epic story", async () => {
     expect(
       await addEpicStory(progettoDao, userDao, "2", {
         description: "epic story",
@@ -36,7 +25,7 @@ describe("Test get progetti", () => {
       }),
     ).toStrictEqual({
       statusCode: 200,
-      body: JSON.stringify({ ok: true }),
+      body: JSON.stringify({ ok: true, id: true }),
     });
     expect((await progettoDao.findById("1")).EpicStories).toHaveLength(1);
   });

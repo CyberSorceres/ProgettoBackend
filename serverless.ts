@@ -1,4 +1,5 @@
 import type { AWS } from "@serverless/typescript";
+import { readNotifications } from "./lambda/read_notification";
 
 const serverlessConfiguration: AWS = {
   service: "todo-list",
@@ -28,9 +29,11 @@ const serverlessConfiguration: AWS = {
             Effect: "Allow",
             Action: [
               "bedrock:InvokeModel",
+              "ses:SendEmail",
               "cognito-idp:AdminInitiateAuth",
               "cognito-idp:AdminCreateUser",
               "cognito-idp:AdminSetUserPassword",
+              "cognito-idp:AdminRespondToAuthChallenge",
             ],
             Resource: "*",
           },
@@ -46,7 +49,56 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getProgetti",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    getProgetto: {
+      handler: "lambda/get_progetto.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/getProgetto",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    getProgettoByTag: {
+      handler: "lambda/get_progetto_by_tag.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/getProgettoByTag",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -66,7 +118,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getEpicStory",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -86,7 +141,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/getUserStory",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -99,7 +157,52 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
-
+    getUserStoryByTag: {
+      handler: "lambda/get_user_story_by_tag.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/getUserStoryByTag",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    getAssignedUserStory: {
+      handler: "lambda/get_assigned_user_story.handler",
+      events: [
+        {
+          http: {
+            method: "GET",
+            path: "/get_assigned_user_story",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
     addProgetto: {
       handler: "lambda/add_progetto.handler",
       events: [
@@ -107,7 +210,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/add_progetto",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -127,7 +233,33 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/add_epic_story",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    addUserStory: {
+      handler: "lambda/add_user_story.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/add_user_story",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -147,7 +279,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/accept_invite",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -167,7 +302,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/invite",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -187,7 +325,33 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/assign_dev",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    businessRequirements: {
+      handler: "lambda/business_requirements.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/business_requirements",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -207,7 +371,80 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "POST",
             path: "/set_unit_test",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    setUserStoryState: {
+      handler: "lambda/set_user_story_state.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/set_user_story_state",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+
+    readNotifications: {
+      handler: "lambda/read_notification.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/read_notification",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+            authorizer: {
+              name: "PrivateAuthorizer",
+              type: "COGNITO_USER_POOLS",
+              arn: {
+                "Fn::GetAtt": ["UserPool", "Arn"],
+              },
+              claims: ["email"],
+            },
+          },
+        },
+      ],
+    },
+    insertFeedback: {
+      handler: "lambda/insert_feedback.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/insert_feedback",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -227,7 +464,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "GET",
             path: "/notifications",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
             authorizer: {
               name: "PrivateAuthorizer",
               type: "COGNITO_USER_POOLS",
@@ -240,21 +480,32 @@ const serverlessConfiguration: AWS = {
         },
       ],
     },
+    changePassword: {
+      handler: "lambda/change_password.handler",
+      events: [
+        {
+          http: {
+            method: "POST",
+            path: "/change_password",
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
+          },
+        },
+      ],
+    },
     bedrock: {
       handler: "lambda/ai.handleBedrock",
+      timeout: 30,
       events: [
         {
           http: {
             method: "GET",
             path: "/bedrock",
-            cors: true,
-            authorizer: {
-              name: "PrivateAuthorizer",
-              type: "COGNITO_USER_POOLS",
-              arn: {
-                "Fn::GetAtt": ["UserPool", "Arn"],
-              },
-              claims: ["email"],
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
             },
           },
         },
@@ -288,7 +539,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "post",
             path: "/login",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
           },
         },
       ],
@@ -300,7 +554,10 @@ const serverlessConfiguration: AWS = {
           http: {
             method: "post",
             path: "/register",
-            cors: true,
+            cors: {
+              allowCredentials: true,
+              origin: "http://localhost:5173",
+            },
           },
         },
       ],
@@ -338,6 +595,19 @@ const serverlessConfiguration: AWS = {
           AccessTokenValidity: 5,
           IdTokenValidity: 5,
           ExplicitAuthFlows: ["ADMIN_NO_SRP_AUTH"],
+        },
+      },
+      GatewayResponseDefault4XX: {
+        Type: "AWS::ApiGateway::GatewayResponse",
+        Properties: {
+          ResponseParameters: {
+            "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+            "gatewayresponse.header.Access-Control-Allow-Headers": "'*'",
+          },
+          ResponseType: "DEFAULT_4XX",
+          RestApiId: {
+            Ref: "ApiGatewayRestApi",
+          },
         },
       },
     },

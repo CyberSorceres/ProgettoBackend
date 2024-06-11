@@ -5,42 +5,28 @@ import { UserMongoose } from "../user/dao/user_mongoose";
 import { Mongoose } from "../database/mongoose";
 import { useCors } from "./use_cors";
 
-interface GetUserStoryRequest {
-  projectId: string;
-  userStoryId: string;
-}
-
-function validateBody(body: object): body is GetUserStoryRequest {
-  return "projectId" in body && "userStoryId" in body;
-}
-
-export const getUserStory = async (
+export const getProgetto = async (
   progettoDao: ProgettoDao,
   userDao: UserDao,
   userId: string,
-  body: object,
+  queryParams: object,
 ) => {
-  const user = await userDao.findById(userId);
-
-  if (!validateBody(body)) {
+  if (!("projectId" in queryParams))
     return {
       statusCode: 400,
-      body: "invalid body",
+      body: "Invalid project id",
     };
-  }
-  if (!user.getProjectIds().some((id) => body.projectId === id)) {
+  const progetto = await progettoDao.findById(queryParams.projectId);
+  const user = await userDao.findById(userId);
+  if (!user?.getProjectIds().some((id) => id === progetto.Id)) {
     return {
       statusCode: 504,
       body: "Unauthorized",
     };
   }
-  const userStories = await progettoDao.getUserStory(
-    body.projectId,
-    body.userStoryId,
-  );
   return {
     statusCode: 200,
-    body: JSON.stringify(userStories),
+    body: JSON.stringify(progetto),
   };
 };
 
@@ -48,7 +34,7 @@ export const handler = async (req) => {
   const id = req.requestContext.authorizer.claims.sub;
   const mongoose = await Mongoose.create(process.env.DB_URL);
   return useCors(
-    await getUserStory(
+    await getProgetto(
       new ProgettoMongoose(mongoose),
       new UserMongoose(mongoose),
       id,
